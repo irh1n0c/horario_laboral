@@ -1,0 +1,133 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'tmpt/login_text.dart';
+
+class LoginP extends StatefulWidget {
+  const LoginP({super.key});
+
+  @override
+  LoginPState createState() => LoginPState();
+}
+
+class LoginPState extends State<LoginP> {
+  final TextEditingController userController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
+
+  Future<void> _signIn() async {
+    try {
+      final email = userController.text.trim();
+      final pass = passwordController.text.trim();
+
+      if (email.isEmpty || pass.isEmpty) {
+        _showErrorDialog("Los campos no pueden estar vacíos.");
+        return;
+      }
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      _showErrorDialog("Error en la autenticación: $e");
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Aceptar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity, // Ocupa todo el espacio disponible
+          padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _header(context),
+                _logo(context),
+                TextFieldInpute(
+                  textEditingController: userController,
+                  hintText: "Ingrese su usuario:",
+                  icon: Icons.account_circle,
+                ),
+                TextFieldInpute(
+                  textEditingController: passwordController,
+                  hintText: "Ingrese su contraseña:",
+                  icon: Icons.lock,
+                  isPass: true,
+                  obscureText: _obscureText,
+                  onObscureTextChanged: (bool value) {
+                    setState(() {
+                      _obscureText = value;
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: _signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003A75),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 54.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 15,
+                    ),
+                  ),
+                  child: const Text("Entrar"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) {
+    return const Column(
+      children: [
+        Text(
+          "",
+          style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  Widget _logo(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    return SizedBox(
+      width: double.infinity,
+      height: height / 2.7,
+      child: Image.asset("assets/images/asistencia.png"),
+    );
+  }
+}

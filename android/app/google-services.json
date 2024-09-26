@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1014966001535",
+    "project_id": "horario-fismet",
+    "storage_bucket": "com.example.horario_fismet"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014966001535:android:fc2b13e9976fc4cae6844a",
+        "android_client_info": {
+          "package_name": "com.example.horario_fismet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2d4DD9Nrhoo5AIEMbuMQ9EG2aq08Kf24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
