@@ -33,7 +33,7 @@ class RegistroTiempoPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: registrarTiempo,
-          child: const Text('Registrar Tiempo'),
+          child: const Text('Marcar asistencia'),
         ),
       ),
     );

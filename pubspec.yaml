@@ -58,6 +58,15 @@ flutter:
   assets:
 #    - assets/icon/
     - assets/images/
+  fonts:
+    - family: geometria
+      fonts:
+        - asset: assets/fonts/Geometria.ttf
+        - asset: assets/fonts/Geometria-Light.ttf
+          weight: 300
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
 
 
   # The following line ensures that the Material Icons font is
