@@ -25,15 +25,35 @@ class MyApp extends StatelessWidget {
 class RegistroTiempoPage extends StatelessWidget {
   const RegistroTiempoPage({super.key});
 
-  Future<void> registrarTiempo() async {
+  Future<void> registrarTiempo(String tipoAccion) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('registros_tiempo').add({
-          'userId': user.uid,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-        print('Tiempo registrado con éxito');
+        // Obtenemos la fecha actual en formato yyyy-MM-dd
+        String fecha =
+            DateTime.now().toLocal().toIso8601String().substring(0, 10);
+
+        // Referencia al documento del día en la subcolección 'dias'
+        DocumentReference diaRef = FirebaseFirestore.instance
+            .collection('registros_tiempo')
+            .doc(user.uid)
+            .collection('dias')
+            .doc(fecha);
+
+        // Dependiendo del tipo de acción, registramos la entrada o salida
+        if (tipoAccion == 'Entrada') {
+          await diaRef.set({
+            'entrada': FieldValue
+                .serverTimestamp(), // Si es entrada, creamos el campo 'entrada'
+          }, SetOptions(merge: true));
+          print('Entrada registrada con éxito');
+        } else if (tipoAccion == 'Salida') {
+          await diaRef.set({
+            'salida': FieldValue
+                .serverTimestamp(), // Si es salida, actualizamos el campo 'salida'
+          }, SetOptions(merge: true));
+          print('Salida registrada con éxito');
+        }
       } else {
         print('No hay usuario autenticado');
       }
@@ -84,7 +104,7 @@ class RegistroTiempoPage extends StatelessWidget {
               'Mi asistencia',
               style: TextStyle(
                 fontFamily: 'Lato',
-                color: Color(0xFF5ebb55),
+                color: Color(0xFF4dc7d5),
                 fontSize: 20.0,
               ),
             ),
@@ -129,7 +149,7 @@ class RegistroTiempoPage extends StatelessWidget {
             right: 0,
             child: ClockWidget(), // Aquí se muestra la hora
           ),
-          const Positioned(
+          Positioned(
             top: 510.0, // Ajusta según sea necesario
             left: 0,
             right: 0,
@@ -138,16 +158,26 @@ class RegistroTiempoPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: CardBackground(
-                      backgroundColor: Color.fromARGB(255, 32, 32, 32),
-                      height: 100.0, // Ajusta la altura según necesites
-                      child: Text("Izquierda"),
+                    child: SizedBox(
+                      height: 100.0, // Altura fija
+                      child: Stack(
+                        children: [
+                          // Imagen
+                          Image.asset(
+                            'assets/images/wall1.jpg',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 100.0,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(width: 10), // Espacio entre los dos
-                  Expanded(
+
+                  const SizedBox(width: 10), // Espacio entre los dos
+                  const Expanded(
                     child: CardBackground(
-                      backgroundColor: Color.fromARGB(255, 32, 32, 32),
+                      backgroundColor: Color(0xFFd7b740),
                       height: 100.0, // Ajusta la altura según necesites
                       child: Text("Derecha"),
                     ),
@@ -168,12 +198,12 @@ class RegistroTiempoPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed:
-                          registrarTiempo, // Función para el botón de la izquierda
+                      onPressed: () => registrarTiempo(
+                          'Salida'), // Función para registrar salida
                       icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('ENTRADA'),
+                      label: const Text('Salida'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF5ebb55),
+                        backgroundColor: const Color(0xFFd286a5),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 12),
@@ -184,13 +214,13 @@ class RegistroTiempoPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10), // Espacio entre los botones
+                  const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed:
-                          registrarTiempo, // Función para el botón de la derecha
+                      onPressed: () => registrarTiempo(
+                          'Entrada'), // Función para registrar entrada
                       icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('SALIDA'),
+                      label: const Text('Entrada'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF5ebb55),
                         foregroundColor: Colors.white,
