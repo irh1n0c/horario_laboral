@@ -6,6 +6,7 @@ import 'templates/button.dart';
 //import 'templates/fonts.dart';
 import 'templates/avatar.dart';
 import 'login/tmpt/clock_widget.dart';
+import 'maps_google.dart';
 
 void main() {
   runApp(const MyApp());
@@ -173,13 +174,27 @@ class RegistroTiempoPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 10), // Espacio entre los dos
-                  const Expanded(
-                    child: CardBackground(
-                      backgroundColor: Color(0xFFd7b740),
-                      height: 100.0, // Ajusta la altura según necesites
-                      child: Text("Derecha"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GoogleMapsTestPage(),
+                        ),
+                      );
+                    },
+                    child: const SizedBox(
+                      // Cambiado de CardBackground a SizedBox
+                      width: 150.0, // Ajusta el ancho según sea necesario
+                      child: CardBackground(
+                        backgroundColor: Color(0xFFd7b740),
+                        height: 100.0, // Ajusta la altura según necesites
+                        child: Center(
+                          // Centra el texto dentro del CardBackground
+                          child: Text("Ubicarme en el mapa"),
+                        ),
+                      ),
                     ),
                   ),
                 ],
