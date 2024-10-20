@@ -3,10 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'card_tmp.dart';
 import 'templates/button.dart';
-//import 'templates/fonts.dart';
 import 'templates/avatar.dart';
 import 'login/tmpt/clock_widget.dart';
-import 'maps_google.dart';
+import 'mapa.dart';
 
 void main() {
   runApp(const MyApp());
@@ -180,7 +179,7 @@ class RegistroTiempoPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const GoogleMapsTestPage(),
+                          builder: (context) => GoogleMapsTestPage(),
                         ),
                       );
                     },
