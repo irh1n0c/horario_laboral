@@ -74,29 +74,24 @@ class RegistroTiempoPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      //backgroundColor: const Color(0xFFF3F3F4),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120.0),
+        preferredSize:
+            const Size.fromHeight(140.0), // Ajusta la altura según lo necesites
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFFedbf40),
+            color: Color.fromARGB(255, 229, 229, 229),
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
           ),
           child: Column(
             children: [
               AppBar(
-                title: const Text(
-                  'Horario Fismet',
-                  style: TextStyle(
-                    color: Color(0xFF814df6), // Cambia el color del texto aquí
-                  ),
-                ),
-                backgroundColor:
-                    Colors.transparent, // Mantén el fondo transparente
+                title: const Text('Horario Fismet'),
+                backgroundColor: Colors.transparent,
                 elevation: 0,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 1.0, horizontal: 10.0), // Reducir padding
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -106,7 +101,7 @@ class RegistroTiempoPage extends StatelessWidget {
                       children: [
                         TextWithBackground(
                           text: 'Bienvenido, Jose',
-                          backgroundColor: const Color(0xFF814df6),
+                          backgroundColor: const Color(0xFF5ebb55),
                           textStyle: const TextStyle(
                             fontFamily: 'geometria',
                             color: Color.fromARGB(255, 247, 246, 244),
@@ -116,10 +111,11 @@ class RegistroTiempoPage extends StatelessWidget {
                         ),
                         const CircularImage(
                           imagePath: 'assets/images/jose.jpg',
-                          radius: 80.0,
+                          radius: 80.0, // Ajusta el tamaño según sea necesario
                         ),
                       ],
                     ),
+                    const SizedBox(height: 10.0),
                   ],
                 ),
               ),
@@ -137,7 +133,7 @@ class RegistroTiempoPage extends StatelessWidget {
                 'Mi asistencia',
                 style: TextStyle(
                   fontFamily: 'Lato',
-                  color: Color(0xFF814df6),
+                  color: Color(0xFF4dc7d5),
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),

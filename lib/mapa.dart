@@ -40,7 +40,8 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Los permisos de ubicación están permanentemente denegados.');
+      return Future.error(
+          'Los permisos de ubicación están permanentemente denegados.');
     }
 
     // Obtener la ubicación actual
@@ -88,11 +89,16 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Maps Test'),
+        title: const Text(
+          'Mi ubicación Fismet',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor:
+            const Color(0xFF814df6), // Cambia 'blue' por el color que desees
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
+        initialCameraPosition: const CameraPosition(
           target: LatLng(37.7749, -122.4194), // San Francisco por defecto
           zoom: 11.0,
         ),
