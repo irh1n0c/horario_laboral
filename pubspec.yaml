@@ -4,18 +4,6 @@ description: "A new Flutter project."
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
@@ -28,11 +16,16 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  excel: ^4.0.6
+  path_provider: ^2.1.4
+  open_file: ^3.5.9
+  
   flutter:
     sdk: flutter
   google_maps_flutter: ^2.9.0
   geolocator: ^13.0.1
   http: ^1.2.2
+  
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,6 +34,7 @@ dependencies:
   cloud_firestore: ^5.4.2
   firebase_auth: ^5.3.0
   firebase_core: ^3.5.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +65,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/iconos/josejose.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/iconos/josejose.png"
+  image_path: "assets/iconos/horario.png"
+  adaptive_icon_background: "#1d2640"
+  adaptive_icon_foreground: "assets/iconos/horario.png"
   # dart run flutter_launcher_icons // para CAMBIAR DE ICONO

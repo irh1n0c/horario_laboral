@@ -53,7 +53,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: CardBackground(
-        backgroundColor: const Color(0xFFEFECF0),
+        backgroundColor: const Color(0xFF9D9E54),
         height: 140.0,
         child: Center(
           child: Column(
@@ -62,7 +62,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               Text(
                 _city,
                 style: const TextStyle(
-                  color: Color(0xFF814df6),
+                  color: Color(0xFFffffff),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,7 +71,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               Text(
                 _weatherInfo,
                 style: const TextStyle(
-                  color: Color(0xFF814df6),
+                  color: Color(0xFFffffff),
                   fontSize: 20,
                 ),
               ),

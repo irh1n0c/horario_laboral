@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:horario_fismet/tabla_datos.dart';
 import 'card_tmp.dart';
 import 'templates/button.dart';
 import 'templates/avatar.dart';
 import 'login/tmpt/clock_widget.dart';
 import 'mapa.dart';
 import 'login/tmpt/cliima_local.dart';
+import 'excel_export.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,16 +51,17 @@ class RegistroTiempoPage extends StatelessWidget {
 
         // Registrar la entrada o salida junto con el alias
         if (tipoAccion == 'Entrada') {
+          print('Registrando entrada...');
           await diaRef.set({
-            'alias': alias, // Guardar el alias dentro del documento
+            'alias': alias,
             'entrada': FieldValue.serverTimestamp(),
           }, SetOptions(merge: true));
           print('Entrada registrada con éxito con alias $alias');
         } else if (tipoAccion == 'Salida') {
-          await diaRef.set({
-            'alias': alias, // Guardar el alias dentro del documento
+          print('Registrando salida...');
+          await diaRef.update({
             'salida': FieldValue.serverTimestamp(),
-          }, SetOptions(merge: true));
+          });
           print('Salida registrada con éxito con alias $alias');
         }
       } else {
@@ -74,218 +77,181 @@ class RegistroTiempoPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120.0),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFedbf40),
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
-          ),
-          child: Column(
-            children: [
-              AppBar(
-                title: const Text(
-                  'Horario Fismet',
-                  style: TextStyle(
-                    color: Color(0xFF814df6), // Cambia el color del texto aquí
-                  ),
+      body: Container(
+        color: const Color(0xff1d2640), // Cambia este color al que desees
+        child: Column(
+          children: [
+            PreferredSize(
+              preferredSize: const Size.fromHeight(120.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xff9d9e54),
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(15)),
                 ),
-                backgroundColor:
-                    Colors.transparent, // Mantén el fondo transparente
-                elevation: 0,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 1.0, horizontal: 10.0), // Reducir padding
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Parte superior: Bienvenida y avatar
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextWithBackground(
-                          text: 'Bienvenido, Jose',
-                          backgroundColor: const Color(0xFF814df6),
-                          textStyle: const TextStyle(
-                            fontFamily: 'geometria',
-                            color: Color.fromARGB(255, 247, 246, 244),
-                            fontSize: 14.0,
+                    AppBar(
+                      title: const Text(
+                        'Horario Fismet',
+                        style: TextStyle(
+                          color: Color(0xff1d2640),
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 1.0, horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextWithBackground(
+                                text: 'Bienvenido, Jose',
+                                backgroundColor: const Color(0xff1d2640),
+                                textStyle: const TextStyle(
+                                  fontFamily: 'geometria',
+                                  color: Color(0xFF9d9e54),
+                                  fontSize: 14.0,
+                                ),
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              const CircularImage(
+                                imagePath: 'assets/images/jose.jpg',
+                                radius: 80.0,
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        const CircularImage(
-                          imagePath: 'assets/images/jose.jpg',
-                          radius: 80.0,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Mi asistencia',
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xFF814df6),
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Mi asistencia',
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff1d2640),
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      // Widget de reloj
+                      const WeatherWidget(),
+                      const SizedBox(height: 5.0),
+                      const ClockWidget(),
+                      const SizedBox(height: 5.0),
+
+                      // Mapa y botones
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const TablaAsistenciasPage(),
+                                  ),
+                                );
+                              },
+                              child: CardBackground(
+                                backgroundColor: const Color(0xff1d2640),
+                                height: size.height * 0.15,
+                                child: const Center(
+                                  child: Text(
+                                    "Tabla de control de usuarios",
+                                    style: TextStyle(color: Color(0xFFffffff)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5.0),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GoogleMapsTestPage(),
+                                  ),
+                                );
+                              },
+                              child: CardBackground(
+                                backgroundColor: const Color(0xff1d2640),
+                                height: size.height * 0.15,
+                                child: const Center(
+                                  child: Text(
+                                    "Ubicarme en el mapa",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10.0),
+
+                      // Botones de asistencia
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => registrarTiempo('Salida'),
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: const Text('Salida'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffffffff),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                elevation: 3,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10.0),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => registrarTiempo('Entrada'),
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: const Text('Entrada'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffffffff),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                elevation: 3,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 10.0),
-              // Widget de reloj
-              const WeatherWidget(),
-              const SizedBox(height: 5.0),
-              // Tarjeta de información del clima
-              // CardBackground(
-              //   backgroundColor: const Color(0xFFEFECF0),
-              //   height: size.height * 0.2,
-              //   child: const Padding(
-              //     padding: EdgeInsets.all(10.0),
-              //     child: Column(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           "Arequipa", // Reemplaza con la ubicación real
-              //           style:
-              //               TextStyle(color: Color(0xFF814df6), fontSize: 20),
-              //         ),
-              //         Text(
-              //           '25 °C', // Reemplaza con la temperatura real
-              //           style:
-              //               TextStyle(color: Color(0xFF814df6), fontSize: 24),
-              //         ),
-              //         Text(
-              //           "Soleado", // Reemplaza con la condición real
-              //           style:
-              //               TextStyle(color: Color(0xFF814df6), fontSize: 16),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              const SizedBox(height: 5.0),
-
-              // Widget de reloj
-              const ClockWidget(),
-              const SizedBox(height: 5.0),
-
-              // Mapa y botones
-              Row(
-                children: [
-                  Expanded(
-                    child: CardBackground(
-                      backgroundColor: const Color(0xFF814df6),
-                      height: size.height * 0.15,
-                      child: const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Control de Asistencia",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize:
-                                    13, // Ajusta el tamaño del texto según lo necesites
-                                fontWeight:
-                                    FontWeight.bold, // Estilo del título
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    5), // Espacio entre el título y el subtítulo
-                            Text(
-                              "Asistencia diaria y gestión de horarios",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize:
-                                    9, // Ajusta el tamaño del subtítulo según lo necesites
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GoogleMapsTestPage(),
-                          ),
-                        );
-                      },
-                      child: CardBackground(
-                        backgroundColor: const Color(0xFF814df6),
-                        height: size.height * 0.15,
-                        child: const Center(
-                          child: Text(
-                            "Ubicarme en el mapa",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-
-              // Botones de asistencia
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => registrarTiempo('Salida'),
-                      icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('Salida'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFedbf40),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        elevation: 3,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10.0),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => registrarTiempo('Entrada'),
-                      icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('Entrada'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFedbf40),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        elevation: 3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
