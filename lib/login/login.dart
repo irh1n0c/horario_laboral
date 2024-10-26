@@ -92,7 +92,8 @@ class LoginPState extends State<LoginP> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF003A75),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 54.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 54.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
