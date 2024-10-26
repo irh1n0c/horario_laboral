@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:device_info_plus/device_info_plus.dart'; // Asegúrate de tener esta dependencia
 import 'card_tmp.dart';
 import 'templates/button.dart';
 import 'templates/avatar.dart';
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
 class RegistroTiempoPage extends StatelessWidget {
   const RegistroTiempoPage({super.key});
 
-  Future<void> registrarTiempo(BuildContext context, String tipoAccion) async {
+  Future<void> registrarTiempo(String tipoAccion) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -42,9 +41,6 @@ class RegistroTiempoPage extends StatelessWidget {
         String fecha =
             DateTime.now().toLocal().toIso8601String().substring(0, 10);
 
-        // Obtener información del dispositivo
-        String dispositivo = await _obtenerInformacionDispositivo(context);
-
         // Referencia al documento en Firestore usando el UID
         DocumentReference diaRef = FirebaseFirestore.instance
             .collection('registros_tiempo')
@@ -52,24 +48,20 @@ class RegistroTiempoPage extends StatelessWidget {
             .collection('dias')
             .doc(fecha);
 
-        // Registrar la entrada o salida junto con el alias y el dispositivo
+        // Registrar la entrada o salida junto con el alias
         if (tipoAccion == 'Entrada') {
           print('Registrando entrada...');
           await diaRef.set({
             'alias': alias,
             'entrada': FieldValue.serverTimestamp(),
-            'dispositivo': dispositivo, // Agregar dispositivo
           }, SetOptions(merge: true));
-          print(
-              'Entrada registrada con éxito con alias $alias desde el dispositivo $dispositivo');
+          print('Entrada registrada con éxito con alias $alias');
         } else if (tipoAccion == 'Salida') {
           print('Registrando salida...');
           await diaRef.update({
             'salida': FieldValue.serverTimestamp(),
-            'dispositivo': dispositivo, // Agregar dispositivo
           });
-          print(
-              'Salida registrada con éxito con alias $alias desde el dispositivo $dispositivo');
+          print('Salida registrada con éxito con alias $alias');
         }
       } else {
         print('No hay usuario autenticado o el correo no es válido');
@@ -77,24 +69,6 @@ class RegistroTiempoPage extends StatelessWidget {
     } catch (e) {
       print('Error al registrar el tiempo: $e');
     }
-  }
-
-  Future<String> _obtenerInformacionDispositivo(BuildContext context) async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String dispositivo;
-
-    if (Theme.of(context).platform == TargetPlatform.android) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      dispositivo =
-          'Android ${androidInfo.version.release} (${androidInfo.model})';
-    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      dispositivo = 'iOS ${iosInfo.systemVersion} (${iosInfo.model})';
-    } else {
-      dispositivo = 'Dispositivo desconocido';
-    }
-
-    return dispositivo;
   }
 
   @override
@@ -238,8 +212,7 @@ class RegistroTiempoPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () =>
-                                  registrarTiempo(context, 'Salida'),
+                              onPressed: () => registrarTiempo('Salida'),
                               icon: const Icon(Icons.check_circle_outline),
                               label: const Text('Salida'),
                               style: ElevatedButton.styleFrom(
@@ -256,8 +229,7 @@ class RegistroTiempoPage extends StatelessWidget {
                           const SizedBox(width: 10.0),
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () =>
-                                  registrarTiempo(context, 'Entrada'),
+                              onPressed: () => registrarTiempo('Entrada'),
                               icon: const Icon(Icons.check_circle_outline),
                               label: const Text('Entrada'),
                               style: ElevatedButton.styleFrom(

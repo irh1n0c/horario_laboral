@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GoogleMapsTestPage extends StatefulWidget {
   @override
@@ -18,19 +21,15 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
     _getCurrentLocation();
   }
 
-  // Método para obtener la ubicación actual
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Verificar si el servicio de ubicación está habilitado
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Si no está habilitado, no puede continuar
       return Future.error('El servicio de ubicación está deshabilitado.');
     }
 
-    // Verificar permisos de ubicación
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -44,21 +43,29 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
           'Los permisos de ubicación están permanentemente denegados.');
     }
 
-    // Obtener la ubicación actual
     Position position = await Geolocator.getCurrentPosition();
 
-    // Actualizar la posición actual y mover la cámara a esa ubicación
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+
+    String street = place.street ?? 'No disponible';
+    String city = place.locality ?? 'No disponible';
+    String district = place.subLocality ?? 'No disponible';
+    String country = place.country ?? 'No disponible';
+
+    print('Dirección: $street, $city, $district, $country');
+
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
       _markers.add(
         Marker(
           markerId: MarkerId('currentLocation'),
           position: _currentPosition!,
-          infoWindow: InfoWindow(title: 'Ubicación Actual'),
+          infoWindow: InfoWindow(title: 'Ubicación Actual: $street'),
         ),
       );
 
-      // Mover la cámara a la ubicación actual
       mapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -68,11 +75,31 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
         ),
       );
     });
+
+    _guardarDireccionEnFirestore(street, city, district, country);
+  }
+
+  Future<void> _guardarDireccionEnFirestore(
+      String street, String city, String district, String country) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String fecha =
+          DateTime.now().toLocal().toIso8601String().substring(0, 10);
+      DocumentReference diaRef = FirebaseFirestore.instance
+          .collection('registros_tiempo')
+          .doc(user.uid)
+          .collection('dias')
+          .doc(fecha);
+
+      await diaRef.set({
+        'direccion': '$street, $city, $district, $country',
+      }, SetOptions(merge: true));
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    // Si ya tenemos la ubicación actual, mover la cámara
     if (_currentPosition != null) {
       mapController.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -93,13 +120,12 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
           'Mi ubicación Fismet',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor:
-            const Color(0xFF814df6), // Cambia 'blue' por el color que desees
+        backgroundColor: const Color(0xFF814df6),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: const CameraPosition(
-          target: LatLng(37.7749, -122.4194), // San Francisco por defecto
+          target: LatLng(37.7749, -122.4194),
           zoom: 11.0,
         ),
         markers: _markers,
