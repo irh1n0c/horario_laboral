@@ -32,23 +32,18 @@ class RegistroTiempoPage extends StatelessWidget {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null && user.email != null) {
-        // Obtener el alias a partir del correo electrónico
         String email = user.email!;
-        String alias =
-            email.split('@')[0]; // Extraer la parte antes de @fismet.com
+        String alias = email.split('@')[0];
 
-        // Obtener la fecha actual
         String fecha =
             DateTime.now().toLocal().toIso8601String().substring(0, 10);
 
-        // Referencia al documento en Firestore usando el UID
         DocumentReference diaRef = FirebaseFirestore.instance
             .collection('registros_tiempo')
-            .doc(user.uid) // Seguir usando el UID como identificador único
+            .doc(user.uid)
             .collection('dias')
             .doc(fecha);
 
-        // Registrar la entrada o salida junto con el alias
         if (tipoAccion == 'Entrada') {
           print('Registrando entrada...');
           await diaRef.set({
@@ -77,14 +72,14 @@ class RegistroTiempoPage extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        color: const Color(0xff1d2640), // Cambia este color al que desees
+        color: const Color(0xffc5beaa),
         child: Column(
           children: [
             PreferredSize(
-              preferredSize: const Size.fromHeight(120.0),
+              preferredSize: const Size.fromHeight(130.0),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xff9d9e54),
+                  color: Color(0xffb32a48),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(15)),
                 ),
@@ -94,7 +89,8 @@ class RegistroTiempoPage extends StatelessWidget {
                       title: const Text(
                         'Horario Fismet',
                         style: TextStyle(
-                          color: Color(0xff1d2640),
+                          color: Color(0xffc5beaa),
+                          fontFamily: 'Geometria',
                         ),
                       ),
                       backgroundColor: Colors.transparent,
@@ -110,17 +106,17 @@ class RegistroTiempoPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextWithBackground(
-                                text: 'Bienvenido, Jose',
-                                backgroundColor: const Color(0xff1d2640),
+                                text: 'Hola bienvenido',
+                                backgroundColor: const Color(0xffc5beaa),
                                 textStyle: const TextStyle(
                                   fontFamily: 'geometria',
-                                  color: Color(0xFF9d9e54),
+                                  color: Color(0xFFb32a48),
                                   fontSize: 14.0,
                                 ),
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               const CircularImage(
-                                imagePath: 'assets/images/jose.jpg',
+                                imagePath: 'assets/images/user.jpg',
                                 radius: 80.0,
                               ),
                             ],
@@ -135,27 +131,24 @@ class RegistroTiempoPage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(5.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Text(
                         'Mi asistencia',
                         style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff1d2640),
-                          fontSize: 24.0,
+                          fontFamily: 'geometria',
+                          color: Color(0xff28356a),
+                          fontSize: 25.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 10.0),
-                      // Widget de reloj
+                      const SizedBox(height: 5.0),
                       const WeatherWidget(),
                       const SizedBox(height: 5.0),
                       const ClockWidget(),
                       const SizedBox(height: 5.0),
-
-                      // Mapa y botones
                       Row(
                         children: [
                           Expanded(
@@ -169,12 +162,16 @@ class RegistroTiempoPage extends StatelessWidget {
                                 );
                               },
                               child: CardBackground(
-                                backgroundColor: const Color(0xff1d2640),
+                                backgroundColor: const Color(0xff28356a),
                                 height: size.height * 0.15,
                                 child: const Center(
                                   child: Text(
-                                    "Tabla de control de usuarios",
-                                    style: TextStyle(color: Color(0xFFffffff)),
+                                    "Control de usuarios",
+                                    style: TextStyle(
+                                      color: Color(0xFFffffff),
+                                      fontFamily:
+                                          'Geometria', // Añade tu fuente aquí
+                                    ),
                                   ),
                                 ),
                               ),
@@ -192,12 +189,15 @@ class RegistroTiempoPage extends StatelessWidget {
                                 );
                               },
                               child: CardBackground(
-                                backgroundColor: const Color(0xff1d2640),
+                                backgroundColor: const Color(0xff28356a),
                                 height: size.height * 0.15,
                                 child: const Center(
                                   child: Text(
-                                    "Ubicarme en el mapa",
-                                    style: TextStyle(color: Colors.white),
+                                    "Marcar mi ubicación",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Geometria',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -206,17 +206,26 @@ class RegistroTiempoPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10.0),
-
-                      // Botones de asistencia
                       Row(
                         children: [
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () => registrarTiempo('Salida'),
-                              icon: const Icon(Icons.check_circle_outline),
-                              label: const Text('Salida'),
+                              icon: const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors
+                                    .white, // Cambia el color del ícono aquí
+                              ),
+                              label: const Text(
+                                'Salida',
+                                style: TextStyle(
+                                  color: Colors
+                                      .white, // Cambia el color del texto aquí
+                                  fontSize: 16,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffffffff),
+                                backgroundColor: const Color(0xffb32a48),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -230,10 +239,21 @@ class RegistroTiempoPage extends StatelessWidget {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () => registrarTiempo('Entrada'),
-                              icon: const Icon(Icons.check_circle_outline),
-                              label: const Text('Entrada'),
+                              icon: const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors
+                                    .white, // Cambia el color del ícono aquí
+                              ),
+                              label: const Text(
+                                'Entrada',
+                                style: TextStyle(
+                                  color: Colors
+                                      .white, // Cambia el color del texto aquí
+                                  fontSize: 16,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffffffff),
+                                backgroundColor: const Color(0xffb32a48),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 12),
                                 shape: RoundedRectangleBorder(

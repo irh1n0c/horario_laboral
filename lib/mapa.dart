@@ -120,7 +120,7 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
           'Mi ubicación Fismet',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF814df6),
+        backgroundColor: const Color(0xFF28356a),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,

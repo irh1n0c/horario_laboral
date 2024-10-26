@@ -50,9 +50,9 @@ flutter:
   fonts:
     - family: geometria
       fonts:
-        - asset: assets/fonts/Geometria.ttf
-        - asset: assets/fonts/Geometria-Light.ttf
-          weight: 300
+        - asset: assets/fonts/SF-Pro-Display-Light.otf
+        - asset: assets/fonts/SF-Pro-Display-Medium.otf
+          #weight: 100
     - family: Lato
       fonts:
         - asset: assets/fonts/Lato-Regular.ttf

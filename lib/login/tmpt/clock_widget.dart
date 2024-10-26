@@ -38,7 +38,7 @@ class _ClockWidgetState extends State<ClockWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: CardBackground(
-        backgroundColor: const Color(0xFF9d9e54),
+        backgroundColor: const Color(0xFFb32a48),
         height: 140.0,
         child: Center(
           child: Column(
