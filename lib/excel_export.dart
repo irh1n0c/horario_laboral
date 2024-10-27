@@ -58,6 +58,8 @@ class TablaAsistenciasPage extends StatelessWidget {
       TextCellValue('Alias'),
       TextCellValue('Entrada'),
       TextCellValue('Salida'),
+      TextCellValue('Dirección'), // Nueva columna para Dirección
+      TextCellValue('Dispositivo'), // Nueva columna para Dispositivo
     ]);
 
     // Añadir datos
@@ -68,6 +70,10 @@ class TablaAsistenciasPage extends StatelessWidget {
         TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
         TextCellValue(
             asistencia['salida']?.toDate().toString() ?? 'No registrado'),
+        TextCellValue(
+            asistencia['direccion'] ?? 'No disponible'), // Agregar Dirección
+        TextCellValue(asistencia['dispositivo'] ??
+            'No disponible'), // Agregar Dispositivo
       ]);
     }
 
@@ -161,6 +167,9 @@ class TablaAsistencias extends StatelessWidget {
         DataColumn(label: Text('Alias')),
         DataColumn(label: Text('Entrada')),
         DataColumn(label: Text('Salida')),
+        DataColumn(label: Text('Dirección')), // Nueva columna para Dirección
+        DataColumn(
+            label: Text('Dispositivo')), // Nueva columna para Dispositivo
       ],
       rows: asistencias.map((asistencia) {
         return DataRow(
@@ -171,6 +180,10 @@ class TablaAsistencias extends StatelessWidget {
             DataCell(Text(asistencia['salida'] != null
                 ? asistencia['salida'].toDate().toString()
                 : 'No registrado')),
+            DataCell(Text(asistencia['direccion'] ??
+                'No disponible')), // Mostrar Dirección
+            DataCell(Text(asistencia['dispositivo'] ??
+                'No disponible')), // Mostrar Dispositivo
           ],
         );
       }).toList(),

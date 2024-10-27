@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:device_info_plus/device_info_plus.dart'; // Asegúrate de tener esta dependencia
+import 'package:device_info_plus/device_info_plus.dart';
 import 'card_tmp.dart';
 import 'templates/button.dart';
 import 'templates/avatar.dart';

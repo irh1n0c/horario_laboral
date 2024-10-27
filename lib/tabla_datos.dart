@@ -84,9 +84,11 @@ class TablaAsistencias1 extends StatelessWidget {
         DataColumn(label: Text('Alias')),
         DataColumn(label: Text('Entrada')),
         DataColumn(label: Text('Salida')),
+        DataColumn(label: Text('Dirección')), // Nueva columna para Dirección
+        DataColumn(
+            label: Text('Dispositivo')), // Nueva columna para Dispositivo
       ],
       rows: asistencias.map((asistencia) {
-        print(asistencia);
         return DataRow(
           cells: <DataCell>[
             DataCell(Text(asistencia['fecha'] ?? '')),
@@ -95,6 +97,10 @@ class TablaAsistencias1 extends StatelessWidget {
             DataCell(Text(asistencia['salida'] != null
                 ? asistencia['salida'].toDate().toString()
                 : 'No registrado')),
+            DataCell(Text(asistencia['direccion'] ??
+                'No disponible')), // Mostrar Dirección
+            DataCell(Text(asistencia['dispositivo'] ??
+                'No disponible')), // Mostrar Dispositivo
           ],
         );
       }).toList(),
