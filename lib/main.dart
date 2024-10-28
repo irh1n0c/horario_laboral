@@ -5,7 +5,7 @@ import 'asistencia.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();  // Inicializa Firebase
+  await Firebase.initializeApp(); // Inicializa Firebase
   runApp(const MyApp());
 }
 
@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginP(),
-        '/home': (context) => const RegistroTiempoPage(), // Nueva ruta para la clase HomePage
+        '/home': (context) =>
+            RegistroTiempoPage(), // Nueva ruta para la clase HomePage
       },
     );
   }

@@ -33,6 +33,7 @@ dependencies:
   firebase_storage: ^12.3.4
   geocoding: ^3.0.0
   shared_preferences: ^2.3.2
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +49,7 @@ flutter:
   assets:
     - assets/iconos/
     - assets/images/
+    - assets/sounds/
   fonts:
     - family: geometria
       fonts:

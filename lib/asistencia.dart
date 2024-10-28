@@ -10,6 +10,7 @@ import 'login/tmpt/clock_widget.dart';
 import 'mapa.dart';
 import 'login/tmpt/cliima_local.dart';
 import 'excel_export.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,15 +21,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: RegistroTiempoPage(),
     );
   }
 }
 
 class RegistroTiempoPage extends StatelessWidget {
-  const RegistroTiempoPage({super.key});
-
+  RegistroTiempoPage({super.key});
+  final AudioPlayer audioPlayer = AudioPlayer();
   Future<void> registrarTiempo(BuildContext context, String tipoAccion) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -54,6 +55,7 @@ class RegistroTiempoPage extends StatelessWidget {
 
         // Registrar la entrada o salida junto con el alias y el dispositivo
         if (tipoAccion == 'Entrada') {
+          await audioPlayer.play(AssetSource('sounds/open.mp3'));
           print('Registrando entrada...');
           await diaRef.set({
             'alias': alias,
@@ -63,6 +65,7 @@ class RegistroTiempoPage extends StatelessWidget {
           print(
               'Entrada registrada con éxito con alias $alias desde el dispositivo $dispositivo');
         } else if (tipoAccion == 'Salida') {
+          await audioPlayer.play(AssetSource('sounds/closed.mp3'));
           print('Registrando salida...');
           await diaRef.update({
             'salida': FieldValue.serverTimestamp(),
@@ -98,6 +101,7 @@ class RegistroTiempoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    //final AudioPlayer audioPlayer = AudioPlayer();
 
     return Scaffold(
       body: Container(
