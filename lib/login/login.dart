@@ -14,6 +14,22 @@ class LoginPState extends State<LoginP> {
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
 
+  @override
+  void initState() {
+    super.initState();
+    _checkUserSession();
+  }
+
+  void _checkUserSession() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Si el usuario ya está autenticado, lo redirigimos a la pantalla principal
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/home');
+      });
+    }
+  }
+
   Future<void> _signIn() async {
     try {
       final email = userController.text.trim();
@@ -63,7 +79,7 @@ class LoginPState extends State<LoginP> {
       body: SafeArea(
         child: Container(
           width: double.infinity,
-          height: double.infinity, // Ocupa todo el espacio disponible
+          height: double.infinity,
           padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
             child: Column(

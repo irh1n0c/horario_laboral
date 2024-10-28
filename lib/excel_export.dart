@@ -52,28 +52,24 @@ class TablaAsistenciasPage extends StatelessWidget {
     var excel = Excel.createExcel();
     Sheet sheet = excel['Asistencias'];
 
-    // Añadir encabezados
+    // Añadir encabezados (cambiando "Alias" por "Usuario")
     sheet.appendRow([
-      TextCellValue('Fecha'),
-      TextCellValue('Alias'),
+      TextCellValue('Usuario'),
       TextCellValue('Entrada'),
       TextCellValue('Salida'),
-      TextCellValue('Dirección'), // Nueva columna para Dirección
-      TextCellValue('Dispositivo'), // Nueva columna para Dispositivo
+      TextCellValue('Dirección'),
+      TextCellValue('Dispositivo'),
     ]);
 
-    // Añadir datos
+    // Añadir datos (cambiando "Alias" por "Usuario")
     for (var asistencia in asistencias) {
       sheet.appendRow([
-        TextCellValue(asistencia['fecha'] ?? ''),
         TextCellValue(asistencia['alias'] ?? ''),
         TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
         TextCellValue(
             asistencia['salida']?.toDate().toString() ?? 'No registrado'),
-        TextCellValue(
-            asistencia['direccion'] ?? 'No disponible'), // Agregar Dirección
-        TextCellValue(asistencia['dispositivo'] ??
-            'No disponible'), // Agregar Dispositivo
+        TextCellValue(asistencia['direccion'] ?? 'No disponible'),
+        TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
       ]);
     }
 
@@ -146,47 +142,38 @@ class TablaAsistenciasPage extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TablaAsistencias(asistencias: asistencias),
+            child: SingleChildScrollView(
+              scrollDirection:
+                  Axis.horizontal, // Permitir desplazamiento horizontal
+              child: DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(label: Text('Usuario')), // Cambiado a "Usuario"
+                  DataColumn(label: Text('Entrada')),
+                  DataColumn(label: Text('Salida')),
+                  DataColumn(label: Text('Dirección')),
+                  DataColumn(label: Text('Dispositivo')),
+                ],
+                rows: asistencias.map((asistencia) {
+                  return DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text(asistencia['alias'] ?? '')),
+                      DataCell(Text(
+                          asistencia['entrada']?.toDate().toString() ?? '')),
+                      DataCell(Text(asistencia['salida'] != null
+                          ? asistencia['salida'].toDate().toString()
+                          : 'No registrado')),
+                      DataCell(
+                          Text(asistencia['direccion'] ?? 'No disponible')),
+                      DataCell(
+                          Text(asistencia['dispositivo'] ?? 'No disponible')),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
           );
         },
       ),
-    );
-  }
-}
-
-class TablaAsistencias extends StatelessWidget {
-  final List<Map<String, dynamic>> asistencias;
-
-  const TablaAsistencias({required this.asistencias, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-      columns: const <DataColumn>[
-        DataColumn(label: Text('Fecha')),
-        DataColumn(label: Text('Alias')),
-        DataColumn(label: Text('Entrada')),
-        DataColumn(label: Text('Salida')),
-        DataColumn(label: Text('Dirección')), // Nueva columna para Dirección
-        DataColumn(
-            label: Text('Dispositivo')), // Nueva columna para Dispositivo
-      ],
-      rows: asistencias.map((asistencia) {
-        return DataRow(
-          cells: <DataCell>[
-            DataCell(Text(asistencia['fecha'] ?? '')),
-            DataCell(Text(asistencia['alias'] ?? '')),
-            DataCell(Text(asistencia['entrada']?.toDate().toString() ?? '')),
-            DataCell(Text(asistencia['salida'] != null
-                ? asistencia['salida'].toDate().toString()
-                : 'No registrado')),
-            DataCell(Text(asistencia['direccion'] ??
-                'No disponible')), // Mostrar Dirección
-            DataCell(Text(asistencia['dispositivo'] ??
-                'No disponible')), // Mostrar Dispositivo
-          ],
-        );
-      }).toList(),
     );
   }
 }

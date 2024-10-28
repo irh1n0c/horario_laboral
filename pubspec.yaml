@@ -32,6 +32,7 @@ dependencies:
   device_info_plus: ^11.1.0
   firebase_storage: ^12.3.4
   geocoding: ^3.0.0
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

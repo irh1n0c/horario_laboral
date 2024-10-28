@@ -38,7 +38,7 @@ class _ClockWidgetState extends State<ClockWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: CardBackground(
-        backgroundColor: const Color(0xFFb32a48),
+        backgroundColor: const Color.fromARGB(255, 197, 184, 158),
         height: 140.0,
         child: Center(
           child: Column(
@@ -47,7 +47,7 @@ class _ClockWidgetState extends State<ClockWidget> {
               Text(
                 _currentTime,
                 style: const TextStyle(
-                  color: Color(0xFFffffff),
+                  color: Color(0xFF222222),
                   fontSize: 48, // Tamaño grande
                   fontWeight: FontWeight.bold,
                 ),
@@ -56,7 +56,7 @@ class _ClockWidgetState extends State<ClockWidget> {
               Text(
                 _currentDate,
                 style: const TextStyle(
-                  color: Color(0xFFffffff),
+                  color: Color(0xFF222222),
                   fontSize: 24, // Tamaño más pequeño para la fecha
                 ),
               ),
