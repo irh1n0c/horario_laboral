@@ -1,16 +1,13 @@
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'card_tmp.dart';
-import 'templates/button.dart';
-import 'templates/avatar.dart';
 import 'login/tmpt/clock_widget.dart';
 import 'mapa.dart';
 import 'login/tmpt/cliima_local.dart';
-import 'excel_export.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'excel_all_user.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +27,8 @@ class MyApp extends StatelessWidget {
 class RegistroTiempoPage extends StatelessWidget {
   RegistroTiempoPage({super.key});
   final AudioPlayer audioPlayer = AudioPlayer();
+  String capitalize(String s) =>
+      s.isEmpty ? '' : s[0].toUpperCase() + s.substring(1);
   Future<void> registrarTiempo(BuildContext context, String tipoAccion) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -46,6 +45,7 @@ class RegistroTiempoPage extends StatelessWidget {
 
         // Obtener información del dispositivo
         String dispositivo = await _obtenerInformacionDispositivo(context);
+
         // Referencia al documento en Firestore usando el UID
         DocumentReference diaRef = FirebaseFirestore.instance
             .collection('registros_tiempo')
@@ -101,7 +101,10 @@ class RegistroTiempoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    //final AudioPlayer audioPlayer = AudioPlayer();
+    User? user = FirebaseAuth.instance.currentUser;
+
+    // Obtener el alias a partir del correo electrónico
+    String alias = user?.email?.split('@')[0] ?? 'Usuario';
 
     return Scaffold(
       body: Container(
@@ -138,19 +141,27 @@ class RegistroTiempoPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextWithBackground(
-                                text: '¡Bienvenido!',
-                                backgroundColor: const Color(0xffff6e1f),
-                                textStyle: const TextStyle(
-                                  fontFamily: 'geometria',
-                                  color: Color(0xFFfaf3e1),
-                                  fontSize: 14.0,
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffff6e1f),
+                                  borderRadius: BorderRadius.circular(20.0),
                                 ),
-                                borderRadius: BorderRadius.circular(20.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0, vertical: 8.0),
+                                child: Text(
+                                  'Bienvenido ${capitalize(alias)}', // Usar la función para capitalizar
+                                  style: const TextStyle(
+                                    fontFamily: 'geometria',
+                                    color: Color(0xFFfaf3e1),
+                                    fontSize: 14.0,
+                                  ),
+                                ),
                               ),
-                              const CircularImage(
-                                imagePath: 'assets/images/user2.jpg',
-                                radius: 80.0,
+                              CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/images/${alias}.jpg'),
+                                radius:
+                                    25.0, // Ajusta el tamaño de la imagen si es necesario
                               ),
                             ],
                           ),
@@ -203,7 +214,6 @@ class RegistroTiempoPage extends StatelessWidget {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 10.0),
                       // Widget de reloj
                       const WeatherWidget(),
@@ -220,7 +230,7 @@ class RegistroTiempoPage extends StatelessWidget {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const TablaAsistenciasPage(),
+                                        TablaAsistenciasPageAll(),
                                   ),
                                 );
                               },
@@ -274,7 +284,7 @@ class RegistroTiempoPage extends StatelessWidget {
                             child: ElevatedButton.icon(
                               onPressed: () =>
                                   registrarTiempo(context, 'Salida'),
-                              icon: const Icon(Icons.check_circle_outline),
+                              icon: const Icon(Icons.check_circle),
                               label: const Text('Salida'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xffff6e1f),
@@ -294,11 +304,12 @@ class RegistroTiempoPage extends StatelessWidget {
                             child: ElevatedButton.icon(
                               onPressed: () =>
                                   registrarTiempo(context, 'Entrada'),
-                              icon: const Icon(Icons.check_circle_outline),
+                              icon: const Icon(Icons.check_circle),
                               label: const Text('Entrada'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xffff6e1f),
-                                foregroundColor: const Color(0xFFfaf3e1),
+                                foregroundColor: const Color(
+                                    0xFFfaf3e1), // Cambia el color del texto aquí
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -310,6 +321,7 @@ class RegistroTiempoPage extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20.0),
                     ],
                   ),
                 ),
