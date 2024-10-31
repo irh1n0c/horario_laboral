@@ -62,7 +62,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               Text(
                 _city,
                 style: const TextStyle(
-                  color: Color(0xFF1a352e),
+                  color: Color(0xFFbf4341),
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,7 +71,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               Text(
                 _weatherInfo,
                 style: const TextStyle(
-                  color: Color(0xFF1a352e),
+                  color: Color(0xFFbf4341),
                   fontSize: 25,
                 ),
               ),

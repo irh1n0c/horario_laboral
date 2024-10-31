@@ -46,10 +46,9 @@ class FrostedGlassBox extends StatelessWidget {
                     end: Alignment.bottomRight,
                     colors: [
                       //begin color
-                      const Color.fromARGB(255, 247, 247, 247)
-                          .withOpacity(0.15),
+                      const Color(0xFF84b0b5).withOpacity(0.15),
                       //end color
-                      const Color.fromARGB(255, 66, 66, 66).withOpacity(0.05),
+                      const Color(0xFF84b0b5).withOpacity(0.05),
                     ]),
               ),
             ),

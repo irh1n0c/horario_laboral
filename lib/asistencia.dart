@@ -119,7 +119,7 @@ class RegistroTiempoPage extends StatelessWidget {
         //     end: Alignment.bottomRight,
         //   ),
         // ),
-        color: const Color(0xFFffffff),
+        color: const Color(0xFFf0efd6),
         // decoration: const BoxDecoration(
         //   image: DecorationImage(
         //     image: AssetImage('assets/walls/wall.webp'),
@@ -141,7 +141,7 @@ class RegistroTiempoPage extends StatelessWidget {
               preferredSize: const Size.fromHeight(130.0),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xFF206a87),
+                  color: Color(0xFF84b0b5),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(18)),
                 ),
@@ -221,7 +221,7 @@ class RegistroTiempoPage extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.logout,
-                                  color: Color(0xFF1a352e),
+                                  color: Color(0xFFbf4341),
                                   size:
                                       22.0, // Ajusta el tamaño del icono si es necesario
                                 ),
@@ -232,7 +232,7 @@ class RegistroTiempoPage extends StatelessWidget {
                                   'Cerrar sesión',
                                   style: TextStyle(
                                     fontFamily: 'geometria',
-                                    color: Color(0xFF1a352e),
+                                    color: Color(0xFFbf4341),
                                     fontSize: 16.0,
                                   ),
                                 ),
@@ -271,13 +271,42 @@ class RegistroTiempoPage extends StatelessWidget {
                                     "Tabla de asistencias",
                                     style: TextStyle(
                                       fontFamily: 'geometria',
-                                      color: Color(0xFF1a352e),
+                                      color: Color(0xFFbf4341),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                          //betabox
+                          // Expanded(
+                          //   child: GestureDetector(
+                          //     onTap: () {
+                          //       Navigator.of(context).push(
+                          //         MaterialPageRoute(
+                          //           builder: (context) =>
+                          //               TablaAsistenciasPageAll(),
+                          //         ),
+                          //       );
+                          //     },
+                          //     child: FrostedGlassBox(
+                          //       theWidth: size.width *
+                          //           0.8, // Ancho responsivo al 80% de la pantalla
+                          //       theHeight: size.height *
+                          //           0.15, // Altura al 15% de la pantalla
+                          //       theChild: const Center(
+                          //         child: Text(
+                          //           "Tabla general",
+                          //           style: TextStyle(
+                          //             fontFamily: 'geometria',
+                          //             color: Color(0xFFbf4341),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          //betabox
                           const SizedBox(width: 5.0),
                           Expanded(
                             child: GestureDetector(
@@ -299,7 +328,7 @@ class RegistroTiempoPage extends StatelessWidget {
                                     "Marcar mi ubicación",
                                     style: TextStyle(
                                       fontFamily: 'geometria',
-                                      color: Color(0xFF1a352e),
+                                      color: Color(0xFFbf4341),
                                     ),
                                   ),
                                 ),
@@ -320,7 +349,7 @@ class RegistroTiempoPage extends StatelessWidget {
                               icon: const Icon(Icons.check_circle),
                               label: const Text('Salida'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF206a87),
+                                backgroundColor: const Color(0xFF84b0b5),
                                 foregroundColor: const Color.fromARGB(255, 255,
                                     255, 255), // Cambia el color del texto aquí
                                 padding: const EdgeInsets.symmetric(
@@ -340,7 +369,7 @@ class RegistroTiempoPage extends StatelessWidget {
                               icon: const Icon(Icons.check_circle),
                               label: const Text('Entrada'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF206a87),
+                                backgroundColor: const Color(0xFF84b0b5),
                                 foregroundColor: const Color.fromARGB(255, 247,
                                     247, 247), // Cambia el color del texto aquí
                                 padding: const EdgeInsets.symmetric(

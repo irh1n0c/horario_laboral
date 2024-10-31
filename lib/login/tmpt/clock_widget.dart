@@ -45,7 +45,7 @@ class _ClockWidgetState extends State<ClockWidget> {
               Text(
                 _currentTime,
                 style: const TextStyle(
-                  color: Color(0xFF1a352e),
+                  color: Color(0xFFbf4341),
                   fontSize: 48, // Tamaño grande
                   fontWeight: FontWeight.bold,
                 ),
@@ -53,7 +53,7 @@ class _ClockWidgetState extends State<ClockWidget> {
               Text(
                 _currentDate,
                 style: const TextStyle(
-                  color: Color(0xFF1a352e),
+                  color: Color(0xFFbf4341),
                   fontSize: 24, // Tamaño más pequeño para la fecha
                 ),
               ),
