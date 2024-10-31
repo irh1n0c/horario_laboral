@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class CardBackground extends StatelessWidget {
   final String? backgroundImage; // Ruta de la imagen de fondo opcional
-  final Color backgroundColor;   // Color de fondo (en caso de no usar imagen)
-  final double height;           // Alto
-  final Widget? child;           // Nuevo parámetro para un widget hijo
+  final Color backgroundColor; // Color de fondo (en caso de no usar imagen)
+  final double height; // Alto
+  final Widget? child; // Nuevo parámetro para un widget hijo
 
   const CardBackground({
     super.key,
-    this.backgroundImage,        // Ruta de la imagen opcional
-    required this.backgroundColor, 
+    this.backgroundImage, // Ruta de la imagen opcional
+    required this.backgroundColor,
     required this.height,
     this.child, // Permitir un hijo opcional
   });
@@ -25,8 +25,8 @@ class CardBackground extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
-        width: width,    // Ocupa todo el ancho de la pantalla
-        height: height,  // Ajustar la altura
+        width: width, // Ocupa todo el ancho de la pantalla
+        height: height, // Ajustar la altura
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -34,10 +34,13 @@ class CardBackground extends StatelessWidget {
             if (backgroundImage != null)
               Image.asset(
                 backgroundImage!,
-                fit: BoxFit.cover, // Ajustar la imagen para cubrir todo el fondo
+                fit:
+                    BoxFit.cover, // Ajustar la imagen para cubrir todo el fondo
               )
             else
-              Container(color: backgroundColor), // Usar color de fondo si no hay imagen
+              Container(
+                  color:
+                      backgroundColor), // Usar color de fondo si no hay imagen
 
             // Contenido de la tarjeta (child)
             Padding(

@@ -47,6 +47,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/walls/
     - assets/iconos/
     - assets/images/
     - assets/sounds/

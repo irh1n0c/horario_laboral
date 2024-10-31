@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:horario_fismet/card_tmp.dart';
-import 'dart:async';
-import 'package:flutter/material.dart';
+import 'glass_button.dart';
 
 class ClockWidget extends StatefulWidget {
   const ClockWidget({super.key});
@@ -37,26 +35,25 @@ class _ClockWidgetState extends State<ClockWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CardBackground(
-        backgroundColor: const Color.fromARGB(255, 197, 184, 158),
-        height: 140.0,
-        child: Center(
+      child: FrostedGlassBox(
+        theWidth: MediaQuery.of(context).size.width * 1, // Ancho responsivo
+        theHeight: 140.0, // Ajusta la altura según sea necesario
+        theChild: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 _currentTime,
                 style: const TextStyle(
-                  color: Color(0xFF222222),
+                  color: Color(0xFF1a352e),
                   fontSize: 48, // Tamaño grande
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              //const SizedBox(height: 1), // Espacio entre la hora y la fecha
               Text(
                 _currentDate,
                 style: const TextStyle(
-                  color: Color(0xFF222222),
+                  color: Color(0xFF1a352e),
                   fontSize: 24, // Tamaño más pequeño para la fecha
                 ),
               ),

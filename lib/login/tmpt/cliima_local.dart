@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
-import 'package:horario_fismet/card_tmp.dart';
+import 'glass_button.dart';
 
 class WeatherWidget extends StatefulWidget {
   const WeatherWidget({super.key});
@@ -52,18 +52,18 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CardBackground(
-        backgroundColor: const Color(0xFFC5B89E),
-        height: 140.0,
-        child: Center(
+      child: FrostedGlassBox(
+        theWidth: MediaQuery.of(context).size.width * 1, // Ancho responsivo
+        theHeight: 140.0, // Altura fija
+        theChild: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 _city,
                 style: const TextStyle(
-                  color: Color(0xFF222222),
-                  fontSize: 24,
+                  color: Color(0xFF1a352e),
+                  fontSize: 34,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -71,8 +71,8 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               Text(
                 _weatherInfo,
                 style: const TextStyle(
-                  color: Color(0xFF222222),
-                  fontSize: 20,
+                  color: Color(0xFF1a352e),
+                  fontSize: 25,
                 ),
               ),
             ],
