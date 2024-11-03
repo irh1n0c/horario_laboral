@@ -15,11 +15,11 @@ class FrostedGlassBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(18),
       child: Container(
         width: theWidth,
         height: theHeight,
-        color: const Color.fromARGB(0, 199, 199, 199),
+        color: const Color.fromARGB(0, 0, 0, 0),
         //we use Stack(); because we want the effects be on top of each other,
         //  just like layer in photoshop.
         child: Stack(
@@ -39,16 +39,18 @@ class FrostedGlassBox extends StatelessWidget {
             //gradient effect ==> the second layer of stack
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: Colors.white.withOpacity(0.13)),
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
                       //begin color
-                      const Color(0xFF84b0b5).withOpacity(0.15),
+                      const Color.fromARGB(255, 203, 242, 247)
+                          .withOpacity(0.15),
                       //end color
-                      const Color(0xFF84b0b5).withOpacity(0.05),
+                      const Color.fromARGB(255, 193, 244, 250)
+                          .withOpacity(0.05),
                     ]),
               ),
             ),

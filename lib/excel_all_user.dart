@@ -31,9 +31,12 @@ class TablaAsistenciasPageAll extends StatelessWidget {
   TablaAsistenciasPageAll({super.key});
 
   final List<String> uids = [
+    'OQl7UyLgI6OjKPuCrEgRNovpXQ52',
+    'OPF1EByld1XKBshoLmQko5BCQlc2',
+    'SkywV6I79Ebp0Ey9iYx8Z1T9s152',
     'jMPFZIaP0yWHbgrZPwug4u8UPYA2',
     'EiEVo1WACXRM7eX0WPl2Np7pSpZ2',
-    'Vi7UXMAtjzYYq72U5ySND9w93yO2',
+    'JEtd2gpNfQWUQrM4T4ElYAd24km1',
     's3Tfiv1kp1czoj9Yqp6hBuDPxPS2',
     'J1YDKxaRW6VgSes2mA1W3nF3SG13',
     'sLCygj3eZFZr0ruGYHFswvzSqm63',
@@ -61,7 +64,7 @@ class TablaAsistenciasPageAll extends StatelessWidget {
         }
       }
     } catch (e) {
-      print("Error al obtener asistencias: $e");
+      debugPrint("Error al obtener asistencias: $e");
     }
 
     return asistenciasPorUsuario;
@@ -105,7 +108,7 @@ class TablaAsistenciasPageAll extends StatelessWidget {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes!);
 
-    print('Archivo guardado en: $filePath');
+    debugPrint('Archivo guardado en: $filePath');
     await OpenFile.open(filePath);
   }
 

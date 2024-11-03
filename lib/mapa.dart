@@ -6,11 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class GoogleMapsTestPage extends StatefulWidget {
+  final Function? onLocationUpdated; // Agregar el callback
+  const GoogleMapsTestPage({super.key, this.onLocationUpdated});
+  //const GoogleMapsTestPage({super.key});
+
   @override
-  _GoogleMapsTestPageState createState() => _GoogleMapsTestPageState();
+  GoogleMapsTestPageState createState() => GoogleMapsTestPageState();
 }
 
-class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
+class GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
   late GoogleMapController mapController;
   LatLng? _currentPosition;
   final Set<Marker> _markers = {};
@@ -25,6 +29,9 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
     bool serviceEnabled;
     LocationPermission permission;
 
+    if (widget.onLocationUpdated != null) {
+      widget.onLocationUpdated!();
+    }
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('El servicio de ubicación está deshabilitado.');
@@ -54,13 +61,13 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
     String district = place.subLocality ?? 'No disponible';
     String country = place.country ?? 'No disponible';
 
-    print('Dirección: $street, $city, $district, $country');
+    debugPrint('Dirección: $street, $city, $district, $country');
 
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
       _markers.add(
         Marker(
-          markerId: MarkerId('currentLocation'),
+          markerId: const MarkerId('currentLocation'),
           position: _currentPosition!,
           infoWindow: InfoWindow(title: 'Ubicación Actual: $street'),
         ),
@@ -76,7 +83,7 @@ class _GoogleMapsTestPageState extends State<GoogleMapsTestPage> {
       );
     });
 
-    _guardarDireccionEnFirestore(street, city, district, country);
+    await _guardarDireccionEnFirestore(street, city, district, country);
   }
 
   Future<void> _guardarDireccionEnFirestore(

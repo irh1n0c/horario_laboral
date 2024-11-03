@@ -37,25 +37,50 @@ class _ClockWidgetState extends State<ClockWidget> {
     return Center(
       child: FrostedGlassBox(
         theWidth: MediaQuery.of(context).size.width * 1, // Ancho responsivo
-        theHeight: 140.0, // Ajusta la altura según sea necesario
+        theHeight: 160.0, // Ajusta la altura según sea necesario
         theChild: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                _currentTime,
-                style: const TextStyle(
-                  color: Color(0xFFbf4341),
-                  fontSize: 48, // Tamaño grande
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.access_alarms, // Ícono de reloj con manecillas
+                    color: Color(0xFFffffff),
+                    size: 32,
+                  ),
+                  const SizedBox(width: 12), // Espacio entre icono y texto
+                  Text(
+                    _currentTime,
+                    style: const TextStyle(
+                      fontFamily: 'geometria',
+                      color: Color(0xFFffffff),
+                      fontSize: 40, // Tamaño grande
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                _currentDate,
-                style: const TextStyle(
-                  color: Color(0xFFbf4341),
-                  fontSize: 24, // Tamaño más pequeño para la fecha
-                ),
+              const SizedBox(height: 2), // Espacio entre hora y fecha
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.calendar_today,
+                    color: Color(0xFFffffff),
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12), // Espacio entre icono y texto
+                  Text(
+                    _currentDate,
+                    style: const TextStyle(
+                      fontFamily: 'geometria',
+                      color: Color(0xFFffffff),
+                      fontSize: 18, // Tamaño más pequeño para la fecha
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
