@@ -59,8 +59,9 @@ class TablaAsistenciasPageAll extends StatelessWidget {
         for (var diaDoc in diasSnapshot.docs) {
           Map<String, dynamic> data = diaDoc.data() as Map<String, dynamic>;
           String alias = data['alias'] ?? 'Sin alias';
-
-          asistenciasPorUsuario.putIfAbsent(alias, () => []).add(data);
+          if (alias != 'Sin alias') {
+            asistenciasPorUsuario.putIfAbsent(alias, () => []).add(data);
+          }
         }
       }
     } catch (e) {
