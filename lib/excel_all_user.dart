@@ -5,6 +5,7 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,13 +89,22 @@ class TablaAsistenciasPageAll extends StatelessWidget {
         TextCellValue('Dirección'),
         TextCellValue('Dispositivo'),
       ]);
-
+      final DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm a');
+      //formato de hora.
       for (var asistencia in asistencias) {
+        String entrada = asistencia['entrada'] != null
+            ? formatter.format(asistencia['entrada'].toDate())
+            : '';
+        String salida = asistencia['salida'] != null
+            ? formatter.format(asistencia['salida'].toDate())
+            : 'No registrado';
         sheet.appendRow([
           TextCellValue(asistencia['alias'] ?? ''),
-          TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
-          TextCellValue(
-              asistencia['salida']?.toDate().toString() ?? 'No registrado'),
+          TextCellValue(entrada),
+          // TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
+          TextCellValue(salida),
+          // TextCellValue(
+          //     asistencia['salida']?.toDate().toString() ?? 'No registrado'),
           TextCellValue(asistencia['direccion'] ?? 'No disponible'),
           TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
         ]);
