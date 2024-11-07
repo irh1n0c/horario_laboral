@@ -5,7 +5,6 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
-import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,9 +59,8 @@ class TablaAsistenciasPageAll extends StatelessWidget {
         for (var diaDoc in diasSnapshot.docs) {
           Map<String, dynamic> data = diaDoc.data() as Map<String, dynamic>;
           String alias = data['alias'] ?? 'Sin alias';
-          if (alias != 'Sin alias') {
-            asistenciasPorUsuario.putIfAbsent(alias, () => []).add(data);
-          }
+
+          asistenciasPorUsuario.putIfAbsent(alias, () => []).add(data);
         }
       }
     } catch (e) {
@@ -89,22 +87,13 @@ class TablaAsistenciasPageAll extends StatelessWidget {
         TextCellValue('Dirección'),
         TextCellValue('Dispositivo'),
       ]);
-      final DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm a');
-      //formato de hora.
+
       for (var asistencia in asistencias) {
-        String entrada = asistencia['entrada'] != null
-            ? formatter.format(asistencia['entrada'].toDate())
-            : '';
-        String salida = asistencia['salida'] != null
-            ? formatter.format(asistencia['salida'].toDate())
-            : 'No registrado';
         sheet.appendRow([
           TextCellValue(asistencia['alias'] ?? ''),
-          TextCellValue(entrada),
-          // TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
-          TextCellValue(salida),
-          // TextCellValue(
-          //     asistencia['salida']?.toDate().toString() ?? 'No registrado'),
+          TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
+          TextCellValue(
+              asistencia['salida']?.toDate().toString() ?? 'No registrado'),
           TextCellValue(asistencia['direccion'] ?? 'No disponible'),
           TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
         ]);
