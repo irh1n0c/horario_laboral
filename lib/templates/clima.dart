@@ -30,7 +30,7 @@ class WeatherCard extends StatelessWidget {
             ),
             Text(
               '$temperature °C',
-              style: const TextStyle(color: Colors.white, fontSize: 24),
+              style: const TextStyle(color: Colors.white, fontSize: 22),
             ),
             Text(
               condition,

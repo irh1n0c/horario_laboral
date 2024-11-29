@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'login/tmpt/clock_widget.dart';
 import 'mapa.dart';
+import 'dart:io';
 import 'login/tmpt/cliima_local.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'excel_all_user.dart';
@@ -192,10 +193,12 @@ class RegistroTiempoPage extends StatelessWidget {
                                 ),
                               ),
                               CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/$alias.jpg'),
-                                radius:
-                                    25.0, // Ajusta el tamaño de la imagen si es necesario
+                                radius: 25.0,
+                                backgroundImage: AssetImage(
+                                  File('assets/images/$alias.jpg').existsSync()
+                                      ? 'assets/images/$alias.jpg'
+                                      : 'assets/images/default.jpg',
+                                ),
                               ),
                             ],
                           ),

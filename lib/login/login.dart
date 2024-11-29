@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:horario_fismet/login/create_user.dart';
 import 'tmpt/login_text.dart';
+import 'package:flutter/gestures.dart';
 
 class LoginP extends StatefulWidget {
   const LoginP({super.key});
@@ -119,6 +121,36 @@ class LoginPState extends State<LoginP> {
                     ),
                   ),
                   child: const Text("Entrar"),
+                ),
+                const SizedBox(height: 20),
+                RichText(
+                  text: TextSpan(
+                    text: '¿No tienes cuenta?, ', // Primera parte del texto
+                    style: const TextStyle(
+                      fontSize: 14, // Tamaño de la fuente
+                      color: Color.fromARGB(255, 41, 41, 41), // Color del texto
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Registrate aqui.', // Segunda parte del texto
+                        style: const TextStyle(
+                          color: Color(
+                              0xFF003A75), // Color diferente para esta parte
+                          // Subrayar para indicar clic
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // Aquí navegas a otra página
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Register(),
+                              ),
+                            );
+                          },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

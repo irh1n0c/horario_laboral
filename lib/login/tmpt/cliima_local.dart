@@ -86,7 +86,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                 style: const TextStyle(
                   fontFamily: 'geometria',
                   color: Color(0xFFffffff),
-                  fontSize: 34,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -97,7 +97,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   const Icon(
                     Icons.wb_sunny,
                     color: Colors.yellow,
-                    size: 40,
+                    size: 32,
                   ),
                   const SizedBox(width: 12),
                   const Icon(
@@ -111,7 +111,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                     style: const TextStyle(
                       fontFamily: 'geometria',
                       color: Color(0xFFffffff),
-                      fontSize: 22,
+                      fontSize: 16,
                     ),
                   ),
                 ],
@@ -130,7 +130,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                         style: TextStyle(
                           fontFamily: 'geometria',
                           color: Color(0xFFffffff),
-                          fontSize: 15,
+                          fontSize: 12,
                         ),
                       ),
                       Text(
@@ -152,7 +152,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                         style: TextStyle(
                           fontFamily: 'geometria',
                           color: Color(0xFFffffff),
-                          fontSize: 15,
+                          fontSize: 10,
                         ),
                       ),
                       Row(
@@ -161,7 +161,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                           const Icon(
                             Icons.water_drop, // Icono de lluvia
                             color: Colors.blue, // Color para el icono de lluvia
-                            size: 18,
+                            size: 14,
                           ),
                           const SizedBox(
                               width: 4), // Espacio entre el icono y el texto
