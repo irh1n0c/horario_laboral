@@ -8,6 +8,7 @@ import 'mapa.dart';
 import 'dart:io';
 import 'login/tmpt/cliima_local.dart';
 import 'package:audioplayers/audioplayers.dart';
+//import 'excel_all_user_beta.dart';
 import 'excel_all_user.dart';
 import 'login/tmpt/glass_button.dart';
 import 'call_mapa.dart';
@@ -120,8 +121,8 @@ class RegistroTiempoPage extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color.fromARGB(255, 131, 184, 253), // Color inicial
-              Color.fromARGB(255, 96, 169, 236), // Color final
+              Color.fromARGB(255, 43, 75, 117), // Color inicial
+              Color.fromARGB(255, 116, 175, 231), // Color final
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -149,7 +150,7 @@ class RegistroTiempoPage extends StatelessWidget {
               preferredSize: const Size.fromHeight(130.0),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 91, 138, 182),
+                  color: Color.fromARGB(255, 39, 70, 100),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(18)),
                 ),
@@ -192,14 +193,22 @@ class RegistroTiempoPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              CircleAvatar(
-                                radius: 25.0,
-                                backgroundImage: AssetImage(
-                                  File('assets/images/$alias.jpg').existsSync()
-                                      ? 'assets/images/$alias.jpg'
-                                      : 'assets/images/default.jpg',
-                                ),
-                              ),
+                              FutureBuilder<bool>(
+                                future: DefaultAssetBundle.of(context)
+                                    .load('assets/images/$alias.jpg')
+                                    .then((_) => true)
+                                    .catchError((_) => false),
+                                builder: (context, snapshot) {
+                                  return CircleAvatar(
+                                    radius: 25.0,
+                                    backgroundImage: AssetImage(
+                                      snapshot.hasData && snapshot.data!
+                                          ? 'assets/images/$alias.jpg'
+                                          : 'assets/images/default.jpg',
+                                    ),
+                                  );
+                                },
+                              )
                             ],
                           ),
                         ],

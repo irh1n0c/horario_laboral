@@ -10,10 +10,12 @@ import 'package:open_file/open_file.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Inicializa Firebase
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TablaAsistenciasPage(),
+      home: const TablaAsistenciasPage(),
     );
   }
 }
@@ -115,7 +117,7 @@ class TablaAsistenciasPage extends StatelessWidget {
             onPressed: () async {
               await exportarAsistencias();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Asistencias exportadas a Excel')),
+                const SnackBar(content: Text('Asistencias exportadas a Excel')),
               );
             },
           ),
@@ -143,32 +145,35 @@ class TablaAsistenciasPage extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
-              scrollDirection:
-                  Axis.horizontal, // Permitir desplazamiento horizontal
-              child: DataTable(
-                columns: const <DataColumn>[
-                  DataColumn(label: Text('Usuario')), // Cambiado a "Usuario"
-                  DataColumn(label: Text('Entrada')),
-                  DataColumn(label: Text('Salida')),
-                  DataColumn(label: Text('Dirección')),
-                  DataColumn(label: Text('Dispositivo')),
-                ],
-                rows: asistencias.map((asistencia) {
-                  return DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(asistencia['alias'] ?? '')),
-                      DataCell(Text(
-                          asistencia['entrada']?.toDate().toString() ?? '')),
-                      DataCell(Text(asistencia['salida'] != null
-                          ? asistencia['salida'].toDate().toString()
-                          : 'No registrado')),
-                      DataCell(
-                          Text(asistencia['direccion'] ?? 'No disponible')),
-                      DataCell(
-                          Text(asistencia['dispositivo'] ?? 'No disponible')),
-                    ],
-                  );
-                }).toList(),
+              scrollDirection: Axis.vertical, // Scroll vertical externo
+              child: SingleChildScrollView(
+                scrollDirection:
+                    Axis.horizontal, // Permitir desplazamiento horizontal
+                child: DataTable(
+                  columns: const <DataColumn>[
+                    DataColumn(label: Text('Usuario')), // Cambiado a "Usuario"
+                    DataColumn(label: Text('Entrada')),
+                    DataColumn(label: Text('Salida')),
+                    DataColumn(label: Text('Dirección')),
+                    DataColumn(label: Text('Dispositivo')),
+                  ],
+                  rows: asistencias.map((asistencia) {
+                    return DataRow(
+                      cells: <DataCell>[
+                        DataCell(Text(asistencia['alias'] ?? '')),
+                        DataCell(Text(
+                            asistencia['entrada']?.toDate().toString() ?? '')),
+                        DataCell(Text(asistencia['salida'] != null
+                            ? asistencia['salida'].toDate().toString()
+                            : 'No registrado')),
+                        DataCell(
+                            Text(asistencia['direccion'] ?? 'No disponible')),
+                        DataCell(
+                            Text(asistencia['dispositivo'] ?? 'No disponible')),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           );

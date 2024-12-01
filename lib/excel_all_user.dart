@@ -158,32 +158,35 @@ class TablaAsistenciasPageAll extends StatelessWidget {
                   title: Text(usuario),
                   children: [
                     SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(label: Text('Usuario')),
-                          DataColumn(label: Text('Entrada')),
-                          DataColumn(label: Text('Salida')),
-                          DataColumn(label: Text('Dirección')),
-                          DataColumn(label: Text('Dispositivo')),
-                        ],
-                        rows: asistencias.map((asistencia) {
-                          return DataRow(
-                            cells: <DataCell>[
-                              DataCell(Text(asistencia['alias'] ?? '')),
-                              DataCell(Text(asistencia['entrada'] != null
-                                  ? asistencia['entrada'].toDate().toString()
-                                  : 'No registrado')),
-                              DataCell(Text(asistencia['salida'] != null
-                                  ? asistencia['salida'].toDate().toString()
-                                  : 'No registrado')),
-                              DataCell(Text(
-                                  asistencia['direccion'] ?? 'No disponible')),
-                              DataCell(Text(asistencia['dispositivo'] ??
-                                  'No disponible')),
-                            ],
-                          );
-                        }).toList(),
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: const <DataColumn>[
+                            DataColumn(label: Text('Usuario')),
+                            DataColumn(label: Text('Entrada')),
+                            DataColumn(label: Text('Salida')),
+                            DataColumn(label: Text('Dirección')),
+                            DataColumn(label: Text('Dispositivo')),
+                          ],
+                          rows: asistencias.map((asistencia) {
+                            return DataRow(
+                              cells: <DataCell>[
+                                DataCell(Text(asistencia['alias'] ?? '')),
+                                DataCell(Text(asistencia['entrada'] != null
+                                    ? asistencia['entrada'].toDate().toString()
+                                    : 'No registrado')),
+                                DataCell(Text(asistencia['salida'] != null
+                                    ? asistencia['salida'].toDate().toString()
+                                    : 'No registrado')),
+                                DataCell(Text(asistencia['direccion'] ??
+                                    'No disponible')),
+                                DataCell(Text(asistencia['dispositivo'] ??
+                                    'No disponible')),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ],

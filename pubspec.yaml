@@ -50,6 +50,7 @@ flutter:
     - assets/walls/
     - assets/iconos/
     - assets/images/
+    - assets/images/default.jpg
     - assets/sounds/
   fonts:
     - family: geometria
