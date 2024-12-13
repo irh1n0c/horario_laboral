@@ -31,6 +31,8 @@ class TablaAsistenciasPageAll extends StatelessWidget {
   TablaAsistenciasPageAll({super.key});
 
   final List<String> uids = [
+    'Qoml3dDyV3hU4edHCad7ezVXIe23',
+    'CgXSYZK9i4Vik8joyyLTII6wxcx2',
     'OQl7UyLgI6OjKPuCrEgRNovpXQ52',
     'OPF1EByld1XKBshoLmQko5BCQlc2',
     'SkywV6I79Ebp0Ey9iYx8Z1T9s152',
@@ -74,6 +76,29 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     var excel = Excel.createExcel();
     excel.delete('Sheet1'); // Elimina la hoja predeterminada
 
+    // Función auxiliar para formatear la hora con AM/PM
+    String formatearHora(DateTime? fecha) {
+      if (fecha == null) return '';
+
+      int hora = fecha.hour;
+      String periodo = hora >= 12 ? 'PM' : 'AM';
+
+      // Convertir a formato 12 horas
+      if (hora > 12) {
+        hora -= 12;
+      } else if (hora == 0) {
+        hora = 12;
+      }
+
+      return '${hora.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')} $periodo';
+    }
+
+    // Función auxiliar para formatear la fecha (dd/MM/yyyy)
+    String formatearFecha(DateTime? fecha) {
+      if (fecha == null) return '';
+      return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+    }
+
     Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
         await obtenerAsistenciasDeUsuariosEspecificos();
 
@@ -82,18 +107,25 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
       sheet.appendRow([
         TextCellValue('Usuario'),
-        TextCellValue('Entrada'),
-        TextCellValue('Salida'),
+        TextCellValue('Fecha'),
+        TextCellValue('Hora Entrada'),
+        TextCellValue('Hora Salida'),
         TextCellValue('Dirección'),
         TextCellValue('Dispositivo'),
       ]);
 
       for (var asistencia in asistencias) {
+        DateTime? fechaEntrada = asistencia['entrada']?.toDate();
+        DateTime? fechaSalida = asistencia['salida']?.toDate();
+
         sheet.appendRow([
           TextCellValue(asistencia['alias'] ?? ''),
-          TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
+          TextCellValue(formatearFecha(fechaEntrada)), // Fecha formateada
           TextCellValue(
-              asistencia['salida']?.toDate().toString() ?? 'No registrado'),
+              formatearHora(fechaEntrada)), // Hora de entrada formateada
+          TextCellValue(fechaSalida != null
+              ? formatearHora(fechaSalida)
+              : 'No registrado'), // Hora de salida formateada
           TextCellValue(asistencia['direccion'] ?? 'No disponible'),
           TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
         ]);

@@ -150,7 +150,7 @@ class RegistroTiempoPage extends StatelessWidget {
               preferredSize: const Size.fromHeight(130.0),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 231, 46, 160),
+                  color: Color.fromARGB(255, 29, 58, 92),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(18)),
                 ),

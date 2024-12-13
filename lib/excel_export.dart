@@ -54,22 +54,51 @@ class TablaAsistenciasPage extends StatelessWidget {
     var excel = Excel.createExcel();
     Sheet sheet = excel['Asistencias'];
 
-    // Añadir encabezados (cambiando "Alias" por "Usuario")
+    // Añadir encabezados con las nuevas columnas
     sheet.appendRow([
       TextCellValue('Usuario'),
-      TextCellValue('Entrada'),
-      TextCellValue('Salida'),
+      TextCellValue('Fecha'),
+      TextCellValue('Hora Entrada'),
+      TextCellValue('Hora Salida'),
       TextCellValue('Dirección'),
       TextCellValue('Dispositivo'),
     ]);
 
-    // Añadir datos (cambiando "Alias" por "Usuario")
+    // Función auxiliar para formatear la hora con AM/PM
+    String formatearHora(DateTime? fecha) {
+      if (fecha == null) return '';
+
+      int hora = fecha.hour;
+      String periodo = hora >= 12 ? 'PM' : 'AM';
+
+      // Convertir a formato 12 horas
+      if (hora > 12) {
+        hora -= 12;
+      } else if (hora == 0) {
+        hora = 12;
+      }
+
+      return '${hora.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')} $periodo';
+    }
+
+    // Función auxiliar para formatear la fecha (dd/MM/yyyy)
+    String formatearFecha(DateTime? fecha) {
+      if (fecha == null) return '';
+      return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+    }
+
+    // Añadir datos con el nuevo formato
     for (var asistencia in asistencias) {
+      DateTime? fechaEntrada = asistencia['entrada']?.toDate();
+      DateTime? fechaSalida = asistencia['salida']?.toDate();
+
       sheet.appendRow([
         TextCellValue(asistencia['alias'] ?? ''),
-        TextCellValue(asistencia['entrada']?.toDate().toString() ?? ''),
-        TextCellValue(
-            asistencia['salida']?.toDate().toString() ?? 'No registrado'),
+        TextCellValue(formatearFecha(fechaEntrada)), // Fecha solo de la entrada
+        TextCellValue(formatearHora(fechaEntrada)), // Hora de entrada con AM/PM
+        TextCellValue(fechaSalida != null
+            ? formatearHora(fechaSalida)
+            : 'No registrado'), // Hora de salida con AM/PM
         TextCellValue(asistencia['direccion'] ?? 'No disponible'),
         TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
       ]);
