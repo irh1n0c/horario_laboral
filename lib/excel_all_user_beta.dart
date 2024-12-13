@@ -10,11 +10,10 @@ class TablaAsistenciasPageAll extends StatefulWidget {
   const TablaAsistenciasPageAll({super.key});
 
   @override
-  _TablaAsistenciasPageAllState createState() =>
-      _TablaAsistenciasPageAllState();
+  TablaAsistenciasPageAllState createState() => TablaAsistenciasPageAllState();
 }
 
-class _TablaAsistenciasPageAllState extends State<TablaAsistenciasPageAll> {
+class TablaAsistenciasPageAllState extends State<TablaAsistenciasPageAll> {
   List<String> uids = [];
 
   @override

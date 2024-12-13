@@ -50,35 +50,39 @@ class RegisterUser extends State<Register> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
+            Expanded(child: _logo(context)),
             TextFieldInpute(
               textEditingController: userController,
-              hintText: "Ingrese su correo:",
+              hintText: "usuario@fismet.com",
               icon: Icons.account_circle,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 5),
             TextFieldInpute(
               textEditingController: passwordController,
-              hintText: "Ingrese su contraseña:",
+              hintText: "contraseña de más de 6 digitos.",
               icon: Icons.lock,
               isPass: true,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _registerUser, // Llama al método para registrar
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF003A75),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 30.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+            const SizedBox(height: 10),
+            Flexible(
+              child: ElevatedButton(
+                onPressed: _registerUser,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 25, 47, 150),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 30.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontSize: 15,
+                  ),
                 ),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.w300,
-                  fontSize: 15,
-                ),
+                child: const Text('Registrarme'),
               ),
-              child: const Text('Registrarme'),
             ),
           ],
         ),
@@ -91,5 +95,14 @@ class RegisterUser extends State<Register> {
     userController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Widget _logo(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    return SizedBox(
+      width: double.infinity,
+      height: height / 2.7,
+      child: Image.asset("assets/images/login_create.png"),
+    );
   }
 }
