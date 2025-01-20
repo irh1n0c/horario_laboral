@@ -90,7 +90,7 @@ class LoginPState extends State<LoginP> {
                 _logo(context),
                 TextFieldInpute(
                   textEditingController: userController,
-                  hintText: "Ingrese su usuario:",
+                  hintText: "Ingrese su usuario: user@gmail.com",
                   icon: Icons.account_circle,
                 ),
                 TextFieldInpute(
