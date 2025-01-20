@@ -5,7 +5,16 @@ import 'asistencia.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Inicializa Firebase
+  await Firebase.initializeApp(
+    options:  const FirebaseOptions(
+    apiKey: "AIzaSyATHVsUvnz4fV6ooX-DfpAAEOQdj3j6T8Y",
+    authDomain: "horario-fismet.firebaseapp.com",
+    projectId: "horario-fismet",
+    storageBucket: "horario-fismet.appspot.com",
+    messagingSenderId: "1014966001535",
+    appId: "1:1014966001535:web:9d7a729612c24fa9e6844a",
+    measurementId: "G-SE7V9XWVM1")
+  ); // Inicializa Firebase
   runApp(const MyApp());
 }
 
