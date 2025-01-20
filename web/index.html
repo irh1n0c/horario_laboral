@@ -1,17 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-   
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-  </script>
-  <base href="$FLUTTER_BASE_HREF">
-
+  <base href="/">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
@@ -29,6 +19,27 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <div id="flutter_target"></div>
+  
+  <script src="main.dart.js" defer></script>
+  <script src="flutter_bootstrap.js" defer></script>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+   
+    const firebaseConfig = {
+    apiKey: "AIzaSyATHVsUvnz4fV6ooX-DfpAAEOQdj3j6T8Y",
+    authDomain: "horario-fismet.firebaseapp.com",
+    projectId: "horario-fismet",
+    storageBucket: "horario-fismet.appspot.com",
+    messagingSenderId: "1014966001535",
+    appId: "1:1014966001535:web:bb00a0c2ed2b07d7e6844a",
+    measurementId: "G-KXB76TQW9L"
+  };
+      // Aquí va tu configuración de Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 </html>

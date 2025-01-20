@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "horario-fismet"
-  }
+  },
+  "targets": {
+    "horario-fismet": {
+      "hosting": {
+        "asistenciasfismetb": [
+          "horario-fismet"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
