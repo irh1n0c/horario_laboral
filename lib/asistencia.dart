@@ -278,7 +278,8 @@ class RegistroTiempoPage extends StatelessWidget {
                                   // Lista de UIDs autorizados para acceder a TablaAsistenciasPageAll
                                   final authorizedUsers = [
                                     'OQl7UyLgI6OjKPuCrEgRNovpXQ52',
-                                    'JEtd2gpNfQWUQrM4T4ElYAd24km1'
+                                    'JEtd2gpNfQWUQrM4T4ElYAd24km1',
+                                    'OYyb3tmd70gUXh7RotUoXZCtBi72'
                                   ];
 
                                   if (authorizedUsers.contains(user.uid)) {

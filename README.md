@@ -14,3 +14,18 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+# Limpia la build anterior
+flutter clean
+
+# Obtén las dependencias
+flutter pub get
+
+# Construye la aplicación web
+flutter build web
+
+# Verifica que los archivos están en build/web
+dir build/web
+
+# Despliega a Firebase
+firebase deploy
