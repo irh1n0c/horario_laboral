@@ -60,7 +60,7 @@ class RegisterUser extends State<Register> {
             const SizedBox(height: 5),
             TextFieldInpute(
               textEditingController: passwordController,
-              hintText: "contraseña de más de 6 digitos.",
+              hintText: "contraseña de 6 digitos.",
               icon: Icons.lock,
               isPass: true,
             ),
