@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class MiBoton extends StatefulWidget {
   final VoidCallback onPressed;
   final Icon icon;
-  final String textoOriginal; // Texto original
-  final String textoAlternativo; // Texto alternativo
+  final String textoOriginal;
+  final String textoAlternativo;
   final Color backgroundColor;
   final Color foregroundColor;
 
@@ -14,10 +14,8 @@ class MiBoton extends StatefulWidget {
     required this.icon,
     required this.textoOriginal,
     required this.textoAlternativo,
-    this.backgroundColor =
-        const Color.fromARGB(255, 255, 255, 255), // Color por defecto
-    this.foregroundColor =
-        const Color.fromARGB(255, 34, 34, 34), // Color de texto por defecto
+    this.backgroundColor = const Color.fromARGB(255, 230, 0, 0), // Fondo blanco
+    this.foregroundColor = const Color.fromARGB(255, 212, 36, 36), // Texto negro
   });
 
   @override
@@ -26,23 +24,21 @@ class MiBoton extends StatefulWidget {
 
 class _MiBotonState extends State<MiBoton> {
   late Color botonColor;
-  late String textoBoton; // Variable para el texto del botón
+  late String textoBoton;
 
   @override
   void initState() {
     super.initState();
-    botonColor = widget.backgroundColor; // Inicializa el color del botón
-    textoBoton = widget.textoOriginal; // Inicializa el texto del botón
+    botonColor = widget.backgroundColor;
+    textoBoton = widget.textoOriginal;
   }
 
   void cambiarEstado() {
     setState(() {
-      // Alterna entre el color original y rojo
       botonColor = botonColor == widget.backgroundColor
-          ? const Color.fromARGB(255, 65, 65, 65)
+          ? const Color.fromARGB(255, 255, 208, 0)//boton marcado
           : widget.backgroundColor;
 
-      // Alterna entre el texto original y el alternativo
       textoBoton = textoBoton == widget.textoOriginal
           ? widget.textoAlternativo
           : widget.textoOriginal;
@@ -53,17 +49,17 @@ class _MiBotonState extends State<MiBoton> {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        cambiarEstado(); // Cambiar el color y texto al presionar el botón
-        widget.onPressed(); // Llamar a la función pasada
+        cambiarEstado();
+        widget.onPressed();
       },
       icon: widget.icon,
-      label: Text(textoBoton), // Usar el texto que cambia
+      label: Text(textoBoton),
       style: ElevatedButton.styleFrom(
         backgroundColor: botonColor,
-        foregroundColor: widget.foregroundColor,
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255), //textos de los botones
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(9),
         ),
       ),
     );

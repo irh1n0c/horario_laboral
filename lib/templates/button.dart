@@ -9,7 +9,7 @@ class TextWithBackground extends StatelessWidget {
   const TextWithBackground({
     super.key,
     required this.text,
-    this.backgroundColor = Colors.blue, // Color de fondo por defecto
+    this.backgroundColor = const Color.fromARGB(255, 255, 254, 254), // Color de fondo por defecto
     this.textStyle,
     this.borderRadius = const BorderRadius.all(Radius.circular(8.0)), // Valor por defecto
   });
@@ -26,7 +26,7 @@ class TextWithBackground extends StatelessWidget {
         text,
         style: textStyle ??
             const TextStyle(
-              color: Colors.white,
+              color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 18.0,
             ), // Estilo del texto por defecto si no se pasa uno
       ),

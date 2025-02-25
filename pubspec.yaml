@@ -34,6 +34,9 @@ dependencies:
   geocoding: ^3.0.0
   shared_preferences: ^2.3.2
   audioplayers: ^6.1.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
+  android_alarm_manager_plus: ^4.0.6
 
 dev_dependencies:
   flutter_test:

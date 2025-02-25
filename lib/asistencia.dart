@@ -1,14 +1,11 @@
-//import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'login/tmpt/clock_widget.dart';
 import 'mapa.dart';
-import 'dart:io';
 import 'login/tmpt/cliima_local.dart';
 import 'package:audioplayers/audioplayers.dart';
-//import 'excel_all_user_beta.dart';
 import 'excel_all_user.dart';
 import 'login/tmpt/glass_button.dart';
 import 'call_mapa.dart';
@@ -31,9 +28,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//boton cambio de color
-
-//clases ya existentes
 class RegistroTiempoPage extends StatelessWidget {
   RegistroTiempoPage({super.key});
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -119,38 +113,21 @@ class RegistroTiempoPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 43, 75, 117), // Color inicial
-              Color.fromARGB(255, 116, 175, 231), // Color final
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          gradient: RadialGradient(
+          colors: [Color(0xff0575e6), Color(0xff021b79)],
+          stops: [0, 1],
+          center: Alignment.center,
+        )
+        
         ),
-        //color: const Color(0xFFf0efd6),
-        // decoration: const BoxDecoration(
-        //   image: DecorationImage(
-        //     image: AssetImage('assets/walls/wall.webp'),
-        //     fit:
-        //         BoxFit.cover, // Ajusta la imagen para que cubra todo el espacio
-        //   ),
-        // ), // Cambia este color al que desees
         child: Column(
           children: [
-            // BackdropFilter(
-            //   filter: ImageFilter.blur(
-            //       sigmaX: 5.0,
-            //       sigmaY: 5.0), // Ajusta la intensidad del desenfoque
-            //   child: Container(
-            //     color: Colors.black.withOpacity(0.5), // Fondo semi-transparente
-            //   ),
-            // ),
+            
             PreferredSize(
               preferredSize: const Size.fromHeight(130.0),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 29, 58, 92),
+                  color: Color.fromARGB(255, 1, 29, 105),
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(18)),
                 ),
@@ -459,36 +436,37 @@ class RegistroTiempoPage extends StatelessWidget {
                             child: MiBoton(
                               onPressed: () =>
                                   registrarTiempo(context, 'Salida'),
-                              icon: const Icon(Icons.check_circle),
+                              icon: const Icon(
+                                Icons.check_circle,
+                                color: Color.fromARGB(255, 255, 255, 255), // Cambia este color al que desees
+                              ),
+
                               textoOriginal:
                                   'Salir', // Texto original del botón
                               textoAlternativo:
-                                  'Salido', // Texto alternativo del botón
-                              backgroundColor: const Color.fromARGB(
-                                  255, 91, 138, 182), // Color de fondo
-                              foregroundColor: const Color.fromARGB(
-                                  255, 247, 247, 247), // Color del texto
+                                  'A descansar', // Texto alternativo del botón
+                              backgroundColor: const Color.fromARGB(255, 255, 11, 121), // Color de fondo
+                              foregroundColor: const Color.fromARGB(255, 255, 255, 255), // Color del texto
                             ),
                           ),
                           const SizedBox(width: 10.0),
                           Expanded(
-                            child: MiBoton(
-                              onPressed: () async {
-                                registrarTiempo(context, 'Entrada');
-                                await locationService
-                                    .getCurrentLocationAndSave();
-                              },
-                              icon: const Icon(Icons.check_circle),
-                              textoOriginal:
-                                  'Entrar', // Texto original del botón
-                              textoAlternativo:
-                                  'Entrado', // Texto alternativo del botón
-                              backgroundColor: const Color.fromARGB(
-                                  255, 91, 138, 182), // Color de fondo
-                              foregroundColor: const Color.fromARGB(
-                                  255, 247, 247, 247), // Color del texto
-                            ),
+                          child: MiBoton(
+                            onPressed: () async {
+                              registrarTiempo(context, 'Entrada');
+                              await locationService.getCurrentLocationAndSave();
+                            },
+                            icon: const Icon(
+                                Icons.check_circle,
+                                color: Color.fromARGB(255, 255, 255, 255), // Cambia este color al que desees
+                              ),
+                            textoOriginal: 'Entrar', // Texto original del botón
+                            textoAlternativo: 'Buena suerte!', // Texto alternativo del botón
+                            backgroundColor: const Color.fromARGB(255, 255, 11, 121), // Color de fondo
+                            foregroundColor: const Color.fromARGB(255, 254, 254, 254), // Color del texto
                           ),
+                        ),
+
                         ],
                       ),
                       const SizedBox(height: 20.0),
