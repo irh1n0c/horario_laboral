@@ -72,6 +72,34 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     return asistenciasPorUsuario;
   }
 
+  // Nuevo método para obtener los viajes de usuarios específicos
+  Future<Map<String, List<Map<String, dynamic>>>>
+      obtenerViajesDeUsuariosEspecificos() async {
+    Map<String, List<Map<String, dynamic>>> viajesPorUsuario = {};
+
+    try {
+      for (var uid in uids) {
+        CollectionReference viajesRef = FirebaseFirestore.instance
+            .collection('registros_tiempo')
+            .doc(uid)
+            .collection('viajes');
+
+        QuerySnapshot viajesSnapshot = await viajesRef.get();
+
+        for (var viajeDoc in viajesSnapshot.docs) {
+          Map<String, dynamic> data = viajeDoc.data() as Map<String, dynamic>;
+          String alias = data['alias'] ?? 'Sin alias';
+
+          viajesPorUsuario.putIfAbsent(alias, () => []).add(data);
+        }
+      }
+    } catch (e) {
+      debugPrint("Error al obtener viajes: $e");
+    }
+
+    return viajesPorUsuario;
+  }
+
   Future<void> exportarAsistenciasDeUsuariosEspecificos() async {
     var excel = Excel.createExcel();
     excel.delete('Sheet1'); // Elimina la hoja predeterminada
@@ -99,9 +127,13 @@ class TablaAsistenciasPageAll extends StatelessWidget {
       return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
     }
 
+    // Obtener las asistencias y viajes
     Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
         await obtenerAsistenciasDeUsuariosEspecificos();
+    Map<String, List<Map<String, dynamic>>> viajesPorUsuario =
+        await obtenerViajesDeUsuariosEspecificos();
 
+    // Primero, exportar asistencias (como antes)
     asistenciasPorUsuario.forEach((alias, asistencias) {
       Sheet sheet = excel[alias];
 
@@ -132,8 +164,62 @@ class TablaAsistenciasPageAll extends StatelessWidget {
       }
     });
 
+    // Luego, exportar viajes en una hoja adicional para cada usuario
+    viajesPorUsuario.forEach((alias, viajes) {
+      // Crear una hoja específica para viajes si no existe
+      String nombreHoja = '$alias - Viajes';
+      Sheet sheetViajes = excel[nombreHoja];
+
+      sheetViajes.appendRow([
+        TextCellValue('Usuario'),
+        TextCellValue('Lugar de Destino'),
+        TextCellValue('Fecha de Viaje'),
+        TextCellValue('Lugar de Retorno'),
+        TextCellValue('Fecha de Retorno'),
+        TextCellValue('Fecha de Creación'),
+      ]);
+
+      for (var viaje in viajes) {
+        DateTime? fechaCreacion = viaje['fechaCreacion']?.toDate();
+
+        sheetViajes.appendRow([
+          TextCellValue(viaje['alias'] ?? ''),
+          TextCellValue(viaje['Lugar de Destino'] ?? 'No disponible'),
+          TextCellValue(viaje['fechaIda'] ?? 'No disponible'),
+          TextCellValue(viaje['retorno'] ?? 'No disponible'),
+          TextCellValue(viaje['fechaRegreso'] ?? 'No disponible'),
+          TextCellValue(fechaCreacion != null
+              ? formatearFecha(fechaCreacion)
+              : 'No disponible'),
+        ]);
+      }
+    });
+
+    // Crear una hoja de resumen de viajes para todos los usuarios
+    Sheet sheetResumenViajes = excel['Resumen de Viajes'];
+    sheetResumenViajes.appendRow([
+      TextCellValue('Usuario'),
+      TextCellValue('Total de Viajes'),
+      TextCellValue('Destinos'),
+    ]);
+
+    viajesPorUsuario.forEach((alias, viajes) {
+      // Obtener destinos únicos
+      Set<String> destinos = viajes
+          .map((viaje) => viaje['destino'] as String?)
+          .where((destino) => destino != null && destino.isNotEmpty)
+          .cast<String>()
+          .toSet();
+
+      sheetResumenViajes.appendRow([
+        TextCellValue(alias),
+        TextCellValue(viajes.length.toString()),
+        TextCellValue(destinos.join(', ')),
+      ]);
+    });
+
     final Directory directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/asistencias_usuarios_especificos.xlsx';
+    String filePath = '${directory.path}/asistencias_y_viajes_usuarios.xlsx';
     var fileBytes = excel.save();
 
     File(filePath)
@@ -148,14 +234,14 @@ class TablaAsistenciasPageAll extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tabla de Asistencias'),
+        title: const Text('Tabla de Asistencias y Viajes'),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () async {
               await exportarAsistenciasDeUsuariosEspecificos();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Asistencias exportadas a Excel')),
+                const SnackBar(content: Text('Datos exportados a Excel')),
               );
             },
           ),
@@ -220,6 +306,65 @@ class TablaAsistenciasPageAll extends StatelessWidget {
                           }).toList(),
                         ),
                       ),
+                    ),
+                    FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+                      future: obtenerViajesDeUsuariosEspecificos(),
+                      builder: (context, viajesSnapshot) {
+                        if (!viajesSnapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+
+                        Map<String, List<Map<String, dynamic>>>
+                            viajesPorUsuario = viajesSnapshot.data!;
+                        List<Map<String, dynamic>> viajesUsuario =
+                            viajesPorUsuario[usuario] ?? [];
+
+                        if (viajesUsuario.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('No hay viajes registrados'),
+                          );
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Viajes',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                columns: const <DataColumn>[
+                                  DataColumn(label: Text('Lugar de Destino')),
+                                  DataColumn(label: Text('Fecha de Viaje')),
+                                  DataColumn(label: Text('Lugar de Retorno')),
+                                  DataColumn(label: Text('Fecha de Regreso')),
+                                ],
+                                rows: viajesUsuario.map((viaje) {
+                                  return DataRow(
+                                    cells: <DataCell>[
+                                      DataCell(Text(
+                                          viaje['destino'] ?? 'No disponible')),
+                                      DataCell(Text(viaje['fechaIda'] ??
+                                          'No disponible')),
+                                      DataCell(Text(
+                                          viaje['retorno'] ?? 'No disponible')),
+                                      DataCell(Text(viaje['fechaRegreso'] ??
+                                          'No disponible')),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 );

@@ -2,7 +2,7 @@ name: horario_fismet
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -37,6 +37,7 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
   android_alarm_manager_plus: ^4.0.6
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -74,3 +75,13 @@ flutter_icons:
   adaptive_icon_background: "#1d2640"
   adaptive_icon_foreground: "assets/iconos/horario.png"
   # dart run flutter_launcher_icons // para CAMBIAR DE ICONO
+#Generar el APK "OPCION 1"
+#flutter build apk --release
+
+#Generar el APK "OPCION 2 VARIOS DEVICES"
+#flutter build apk --release --split-per-abi
+
+#build/app/outputs/flutter-apk/
+#app-arm64-v8a-release.apk
+#app-armeabi-v7a-release.apk
+#app-x86_64-release.apk

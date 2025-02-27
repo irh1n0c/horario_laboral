@@ -3,14 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';//excel apk
-import 'package:open_file/open_file.dart';//excel apk
-import 'dart:io' if (dart.library.html) 'dart:html' as html; //file web
-import 'package:flutter/foundation.dart' show kIsWeb; //file web
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(); // Inicializa Firebase
   runApp(const MyApp());
 }
 
@@ -47,7 +45,8 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     'ZWJ936qs7cUiJnid3XyMo1CCICn1',
   ];
 
-  Future<Map<String, List<Map<String, dynamic>>>> obtenerAsistenciasDeUsuariosEspecificos() async {
+  Future<Map<String, List<Map<String, dynamic>>>>
+      obtenerAsistenciasDeUsuariosEspecificos() async {
     Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario = {};
 
     try {
@@ -73,29 +72,32 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     return asistenciasPorUsuario;
   }
 
-  String formatearHora(DateTime? fecha) {
-    if (fecha == null) return '';
-
-    int hora = fecha.hour;
-    String periodo = hora >= 12 ? 'PM' : 'AM';
-
-    if (hora > 12) {
-      hora -= 12;
-    } else if (hora == 0) {
-      hora = 12;
-    }
-
-    return '${hora.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')} $periodo';
-  }
-
-  String formatearFecha(DateTime? fecha) {
-    if (fecha == null) return '';
-    return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
-  }
-
   Future<void> exportarAsistenciasDeUsuariosEspecificos() async {
     var excel = Excel.createExcel();
-    excel.delete('Sheet1');
+    excel.delete('Sheet1'); // Elimina la hoja predeterminada
+
+    // Función auxiliar para formatear la hora con AM/PM
+    String formatearHora(DateTime? fecha) {
+      if (fecha == null) return '';
+
+      int hora = fecha.hour;
+      String periodo = hora >= 12 ? 'PM' : 'AM';
+
+      // Convertir a formato 12 horas
+      if (hora > 12) {
+        hora -= 12;
+      } else if (hora == 0) {
+        hora = 12;
+      }
+
+      return '${hora.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')} $periodo';
+    }
+
+    // Función auxiliar para formatear la fecha (dd/MM/yyyy)
+    String formatearFecha(DateTime? fecha) {
+      if (fecha == null) return '';
+      return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
+    }
 
     Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
         await obtenerAsistenciasDeUsuariosEspecificos();
@@ -118,34 +120,28 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
         sheet.appendRow([
           TextCellValue(asistencia['alias'] ?? ''),
-          TextCellValue(formatearFecha(fechaEntrada)),
-          TextCellValue(formatearHora(fechaEntrada)),
-          TextCellValue(fechaSalida != null ? formatearHora(fechaSalida) : 'No registrado'),
+          TextCellValue(formatearFecha(fechaEntrada)), // Fecha formateada
+          TextCellValue(
+              formatearHora(fechaEntrada)), // Hora de entrada formateada
+          TextCellValue(fechaSalida != null
+              ? formatearHora(fechaSalida)
+              : 'No registrado'), // Hora de salida formateada
           TextCellValue(asistencia['direccion'] ?? 'No disponible'),
           TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
         ]);
       }
     });
 
+    final Directory directory = await getApplicationDocumentsDirectory();
+    String filePath = '${directory.path}/asistencias_usuarios_especificos.xlsx';
     var fileBytes = excel.save();
-    
-    if (kIsWeb) {
-      // Lógica específica para web
-      final blob = html.Blob([fileBytes], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      final anchor = html.AnchorElement(href: url)
-        ..setAttribute('download', 'asistencias_usuarios.xlsx')
-        ..click();
-      html.Url.revokeObjectUrl(url);
-    } else {
-      // Lógica para Android (mantener el código existente)
-      final directory = await getApplicationDocumentsDirectory();
-      String filePath = '${directory.path}/asistencias_usuarios_especificos.xlsx';
-      File(filePath)
-        ..createSync(recursive: true)
-        ..writeAsBytesSync(fileBytes!);
-      await OpenFile.open(filePath);
-    }
+
+    File(filePath)
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes!);
+
+    debugPrint('Archivo guardado en: $filePath');
+    await OpenFile.open(filePath);
   }
 
   @override
@@ -158,11 +154,9 @@ class TablaAsistenciasPageAll extends StatelessWidget {
             icon: const Icon(Icons.download),
             onPressed: () async {
               await exportarAsistenciasDeUsuariosEspecificos();
-              if (!kIsWeb) { // Solo mostrar SnackBar en Android
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Asistencias exportadas a Excel')),
-                );
-              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Asistencias exportadas a Excel')),
+              );
             },
           ),
         ],
@@ -182,7 +176,8 @@ class TablaAsistenciasPageAll extends StatelessWidget {
             return const Center(child: Text('No hay datos disponibles'));
           }
 
-          Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario = snapshot.data!;
+          Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
+              snapshot.data!;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -216,8 +211,10 @@ class TablaAsistenciasPageAll extends StatelessWidget {
                                 DataCell(Text(asistencia['salida'] != null
                                     ? asistencia['salida'].toDate().toString()
                                     : 'No registrado')),
-                                DataCell(Text(asistencia['direccion'] ?? 'No disponible')),
-                                DataCell(Text(asistencia['dispositivo'] ?? 'No disponible')),
+                                DataCell(Text(asistencia['direccion'] ??
+                                    'No disponible')),
+                                DataCell(Text(asistencia['dispositivo'] ??
+                                    'No disponible')),
                               ],
                             );
                           }).toList(),

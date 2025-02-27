@@ -11,6 +11,7 @@ import 'login/tmpt/glass_button.dart';
 import 'call_mapa.dart';
 import 'excel_export.dart';
 import 'templates/boton_cambio_color.dart';
+import 'boton_viajes.dart';
 
 final LocationService locationService = LocationService();
 void main() {
@@ -113,16 +114,13 @@ class RegistroTiempoPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: RadialGradient(
+            gradient: RadialGradient(
           colors: [Color(0xff0575e6), Color(0xff021b79)],
           stops: [0, 1],
           center: Alignment.center,
-        )
-        
-        ),
+        )),
         child: Column(
           children: [
-            
             PreferredSize(
               preferredSize: const Size.fromHeight(130.0),
               child: Container(
@@ -280,7 +278,7 @@ class RegistroTiempoPage extends StatelessWidget {
                               },
                               child: FrostedGlassBox(
                                 theWidth: size.width *
-                                    0.8, // Ancho responsivo al 80% de la pantalla
+                                    0.7, // Ancho responsivo al 80% de la pantalla
                                 theHeight: size.height *
                                     0.15, // Altura al 15% de la pantalla
                                 theChild: const Column(
@@ -295,9 +293,7 @@ class RegistroTiempoPage extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                        height:
-                                            4), // Espaciado entre el título y el Row
+                                    // Espaciado entre el título y el Row
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -325,104 +321,158 @@ class RegistroTiempoPage extends StatelessWidget {
                               ),
                             ),
                           ),
-
-                          //betabox
-                          // Expanded(
-                          //   child: GestureDetector(
-                          //     onTap: () {
-                          //       Navigator.of(context).push(
-                          //         MaterialPageRoute(
-                          //           builder: (context) =>
-                          //               TablaAsistenciasPageAll(),
-                          //         ),
-                          //       );
-                          //     },
-                          //     child: FrostedGlassBox(
-                          //       theWidth: size.width *
-                          //           0.8, // Ancho responsivo al 80% de la pantalla
-                          //       theHeight: size.height *
-                          //           0.15, // Altura al 15% de la pantalla
-                          //       theChild: const Center(
-                          //         child: Text(
-                          //           "Tabla general",
-                          //           style: TextStyle(
-                          //             fontFamily: 'geometria',
-                          //             color: Color(0xFFbf4341),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          //betabox
-                          const SizedBox(width: 5.0),
                           Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const GoogleMapsTestPage(),
-                                  ),
-                                );
-                              },
-                              child: FrostedGlassBox(
-                                theWidth: size.width *
-                                    0.8, // Ancho responsivo al 80% de la pantalla
-                                theHeight: size.height *
-                                    0.15, // Altura al 15% de la pantalla
-                                theChild: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(
-                                            8), // Espaciado interno
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                              width: 1), // Borde blanco
-                                          borderRadius: BorderRadius.circular(
-                                              14), // Esquinas redondeadas
-                                        ),
-                                        child: const Text(
-                                          "Marcar mi ubicación",
-                                          style: TextStyle(
-                                            fontFamily: 'geometria',
-                                            color: Color(0xFFffffff),
-                                          ),
-                                        ),
+                            child: Column(
+                              // Use Column for vertical arrangement instead of Row
+                              children: [
+                                // First widget
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const GoogleMapsTestPage(),
                                       ),
-                                      const SizedBox(
-                                          height:
-                                              8), // Espaciado entre los textos
-                                      const Row(
+                                    );
+                                  },
+                                  child: FrostedGlassBox(
+                                    theWidth: size.width * 0.45,
+                                    theHeight: size.height * 0.07,
+                                    theChild: Center(
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.my_location,
-                                            color: Color(
-                                                0xFFffffff), // Color del ícono
-                                          ),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            "Perdóne la toxicidad",
-                                            style: TextStyle(
-                                              fontFamily: 'geometria',
-                                              color: Color(0xFFffffff),
-                                              fontSize: 10,
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: const Color.fromARGB(
+                                                      255, 255, 255, 255),
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: const Text(
+                                              "Marcar mi ubicación",
+                                              style: TextStyle(
+                                                fontFamily: 'geometria',
+                                                color: Color(0xFFffffff),
+                                              ),
                                             ),
                                           ),
-                                          // Espaciado entre el texto y el ícono
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                                const SizedBox(height: 4),
+                                // Duplicated widget (second widget)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              FormularioViaje()),
+                                    );
+                                  },
+                                  child: FrostedGlassBox(
+                                    theWidth: size.width * 0.45,
+                                    theHeight: size.height * 0.07,
+                                    theChild: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/montanas.png', // Ruta de la imagen en assets
+                                                width:
+                                                    40, // Ajusta el tamaño según necesites
+                                                height: 40,
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      10), // Espacio entre la imagen y el texto
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Vámonos de viaje',
+                                                    style: TextStyle(
+                                                      fontFamily: 'geometria',
+                                                      fontSize:
+                                                          size.width * 0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center, // Centra los elementos en la fila
+                                                    children: [
+                                                      ShaderMask(
+                                                        shaderCallback:
+                                                            (Rect bounds) {
+                                                          return const LinearGradient(
+                                                            colors: [
+                                                              Colors.yellow,
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  109,
+                                                                  216,
+                                                                  248)
+                                                            ], // Degradado amarillo-verde
+                                                            begin: Alignment
+                                                                .topLeft,
+                                                            end: Alignment
+                                                                .bottomRight,
+                                                          ).createShader(
+                                                              bounds);
+                                                        },
+                                                        child: Text(
+                                                          'BUENA SUERTE',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'geometria',
+                                                            fontSize:
+                                                                size.width *
+                                                                    0.03,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                            color: Colors
+                                                                .white, // Necesario, pero será reemplazado por el degradado
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      // const SizedBox(
+                                                      //     width:
+                                                      //         8), // Espacio entre el texto y el emoji
+                                                      // const Text(
+                                                      //   '☠️', // Emoji de carita feliz
+                                                      //   style: TextStyle(
+                                                      //       fontSize:
+                                                      //           12), // Tamaño del emoji
+                                                      // ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -438,35 +488,43 @@ class RegistroTiempoPage extends StatelessWidget {
                                   registrarTiempo(context, 'Salida'),
                               icon: const Icon(
                                 Icons.check_circle,
-                                color: Color.fromARGB(255, 255, 255, 255), // Cambia este color al que desees
+                                color: Color.fromARGB(255, 255, 255,
+                                    255), // Cambia este color al que desees
                               ),
 
                               textoOriginal:
                                   'Salir', // Texto original del botón
                               textoAlternativo:
                                   'A descansar', // Texto alternativo del botón
-                              backgroundColor: const Color.fromARGB(255, 255, 11, 121), // Color de fondo
-                              foregroundColor: const Color.fromARGB(255, 255, 255, 255), // Color del texto
+                              backgroundColor: const Color.fromARGB(
+                                  255, 255, 11, 121), // Color de fondo
+                              foregroundColor: const Color.fromARGB(
+                                  255, 255, 255, 255), // Color del texto
                             ),
                           ),
                           const SizedBox(width: 10.0),
                           Expanded(
-                          child: MiBoton(
-                            onPressed: () async {
-                              registrarTiempo(context, 'Entrada');
-                              await locationService.getCurrentLocationAndSave();
-                            },
-                            icon: const Icon(
+                            child: MiBoton(
+                              onPressed: () async {
+                                registrarTiempo(context, 'Entrada');
+                                await locationService
+                                    .getCurrentLocationAndSave();
+                              },
+                              icon: const Icon(
                                 Icons.check_circle,
-                                color: Color.fromARGB(255, 255, 255, 255), // Cambia este color al que desees
+                                color: Color.fromARGB(255, 255, 255,
+                                    255), // Cambia este color al que desees
                               ),
-                            textoOriginal: 'Entrar', // Texto original del botón
-                            textoAlternativo: 'Buena suerte!', // Texto alternativo del botón
-                            backgroundColor: const Color.fromARGB(255, 255, 11, 121), // Color de fondo
-                            foregroundColor: const Color.fromARGB(255, 254, 254, 254), // Color del texto
+                              textoOriginal:
+                                  'Entrar', // Texto original del botón
+                              textoAlternativo:
+                                  'Buena suerte!', // Texto alternativo del botón
+                              backgroundColor: const Color.fromARGB(
+                                  255, 255, 11, 121), // Color de fondo
+                              foregroundColor: const Color.fromARGB(
+                                  255, 254, 254, 254), // Color del texto
+                            ),
                           ),
-                        ),
-
                         ],
                       ),
                       const SizedBox(height: 20.0),
