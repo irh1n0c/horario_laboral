@@ -5,6 +5,10 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,7 +76,6 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     return asistenciasPorUsuario;
   }
 
-  // Nuevo método para obtener los viajes de usuarios específicos
   Future<Map<String, List<Map<String, dynamic>>>>
       obtenerViajesDeUsuariosEspecificos() async {
     Map<String, List<Map<String, dynamic>>> viajesPorUsuario = {};
@@ -100,7 +103,8 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     return viajesPorUsuario;
   }
 
-  Future<void> exportarAsistenciasDeUsuariosEspecificos() async {
+  Future<void> exportarAsistenciasDeUsuariosEspecificos(
+      BuildContext context) async {
     var excel = Excel.createExcel();
     excel.delete('Sheet1'); // Elimina la hoja predeterminada
 
@@ -184,7 +188,7 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
         sheetViajes.appendRow([
           TextCellValue(viaje['alias'] ?? ''),
-          TextCellValue(viaje['Lugar de Destino'] ?? 'No disponible'),
+          TextCellValue(viaje['destino'] ?? 'No disponible'),
           TextCellValue(viaje['fechaIda'] ?? 'No disponible'),
           TextCellValue(viaje['retorno'] ?? 'No disponible'),
           TextCellValue(viaje['fechaRegreso'] ?? 'No disponible'),
@@ -205,11 +209,13 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
     viajesPorUsuario.forEach((alias, viajes) {
       // Obtener destinos únicos
-      Set<String> destinos = viajes
-          .map((viaje) => viaje['destino'] as String?)
-          .where((destino) => destino != null && destino.isNotEmpty)
-          .cast<String>()
-          .toSet();
+      Set<String> destinos = {};
+      for (var viaje in viajes) {
+        String? destino = viaje['destino'] as String?;
+        if (destino != null && destino.isNotEmpty) {
+          destinos.add(destino);
+        }
+      }
 
       sheetResumenViajes.appendRow([
         TextCellValue(alias),
@@ -218,16 +224,45 @@ class TablaAsistenciasPageAll extends StatelessWidget {
       ]);
     });
 
-    final Directory directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/asistencias_y_viajes_usuarios.xlsx';
     var fileBytes = excel.save();
+    if (fileBytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al generar el archivo Excel')),
+      );
+      return;
+    }
 
-    File(filePath)
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(fileBytes!);
+    // Manejo diferente según la plataforma
+    if (kIsWeb) {
+      // Para web
+      final blob = html.Blob([Uint8List.fromList(fileBytes)]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute('download', 'asistencias_y_viajes_usuarios.xlsx')
+        ..click();
 
-    debugPrint('Archivo guardado en: $filePath');
-    await OpenFile.open(filePath);
+      // Limpiar
+      html.Url.revokeObjectUrl(url);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Descargando Excel...')),
+      );
+    } else {
+      // Para móvil (Android/iOS)
+      final Directory directory = await getApplicationDocumentsDirectory();
+      String filePath = '${directory.path}/asistencias_y_viajes_usuarios.xlsx';
+
+      File(filePath)
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes);
+
+      debugPrint('Archivo guardado en: $filePath');
+      await OpenFile.open(filePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Archivo Excel generado')),
+      );
+    }
   }
 
   @override
@@ -239,10 +274,7 @@ class TablaAsistenciasPageAll extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () async {
-              await exportarAsistenciasDeUsuariosEspecificos();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Datos exportados a Excel')),
-              );
+              await exportarAsistenciasDeUsuariosEspecificos(context);
             },
           ),
         ],

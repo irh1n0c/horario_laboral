@@ -38,6 +38,7 @@ dependencies:
   timezone: ^0.10.0
   android_alarm_manager_plus: ^4.0.6
   intl: ^0.20.2
+  universal_html: ^2.2.4
 
 dev_dependencies:
   flutter_test:

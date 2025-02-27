@@ -5,7 +5,6 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
-import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,22 +45,12 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     'ZWJ936qs7cUiJnid3XyMo1CCICn1',
   ];
 
-  Future<Map<String, dynamic>> obtenerAsistenciasYViajesDeUsuarios() async {
+  Future<Map<String, List<Map<String, dynamic>>>>
+      obtenerAsistenciasDeUsuariosEspecificos() async {
     Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario = {};
-    Map<String, List<Map<String, dynamic>>> viajesPorUsuario = {};
 
     try {
       for (var uid in uids) {
-        // Obtener información del documento principal del usuario para el alias
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('registros_tiempo')
-            .doc(uid)
-            .get();
-        
-        Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
-        String alias = userData?['alias'] ?? uid.substring(0, 5);
-
-        // Obtener asistencias
         CollectionReference diasRef = FirebaseFirestore.instance
             .collection('registros_tiempo')
             .doc(uid)
@@ -69,19 +58,27 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
         QuerySnapshot diasSnapshot = await diasRef.get();
 
-        List<Map<String, dynamic>> asistenciasUsuario = [];
         for (var diaDoc in diasSnapshot.docs) {
           Map<String, dynamic> data = diaDoc.data() as Map<String, dynamic>;
-          data['alias'] = data['alias'] ?? alias;
-          data['tipo'] = 'asistencia';
-          asistenciasUsuario.add(data);
-        }
+          String alias = data['alias'] ?? 'Sin alias';
 
-        if (asistenciasUsuario.isNotEmpty) {
-          asistenciasPorUsuario[alias] = asistenciasUsuario;
+          asistenciasPorUsuario.putIfAbsent(alias, () => []).add(data);
         }
+      }
+    } catch (e) {
+      debugPrint("Error al obtener asistencias: $e");
+    }
 
-        // Obtener viajes
+    return asistenciasPorUsuario;
+  }
+
+  // Nuevo método para obtener los viajes de usuarios específicos
+  Future<Map<String, List<Map<String, dynamic>>>>
+      obtenerViajesDeUsuariosEspecificos() async {
+    Map<String, List<Map<String, dynamic>>> viajesPorUsuario = {};
+
+    try {
+      for (var uid in uids) {
         CollectionReference viajesRef = FirebaseFirestore.instance
             .collection('registros_tiempo')
             .doc(uid)
@@ -89,30 +86,21 @@ class TablaAsistenciasPageAll extends StatelessWidget {
 
         QuerySnapshot viajesSnapshot = await viajesRef.get();
 
-        List<Map<String, dynamic>> viajesUsuario = [];
         for (var viajeDoc in viajesSnapshot.docs) {
           Map<String, dynamic> data = viajeDoc.data() as Map<String, dynamic>;
-          data['alias'] = data['alias'] ?? alias;
-          data['id'] = viajeDoc.id;
-          data['tipo'] = 'viaje';
-          viajesUsuario.add(data);
-        }
+          String alias = data['alias'] ?? 'Sin alias';
 
-        if (viajesUsuario.isNotEmpty) {
-          viajesPorUsuario[alias] = viajesUsuario;
+          viajesPorUsuario.putIfAbsent(alias, () => []).add(data);
         }
       }
     } catch (e) {
-      debugPrint("Error al obtener datos: $e");
+      debugPrint("Error al obtener viajes: $e");
     }
 
-    return {
-      'asistencias': asistenciasPorUsuario,
-      'viajes': viajesPorUsuario,
-    };
+    return viajesPorUsuario;
   }
 
-  Future<void> exportarDatosAExcel(Map<String, dynamic> datos) async {
+  Future<void> exportarAsistenciasDeUsuariosEspecificos() async {
     var excel = Excel.createExcel();
     excel.delete('Sheet1'); // Elimina la hoja predeterminada
 
@@ -139,100 +127,99 @@ class TablaAsistenciasPageAll extends StatelessWidget {
       return '${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';
     }
 
-    Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario = datos['asistencias'];
-    Map<String, List<Map<String, dynamic>>> viajesPorUsuario = datos['viajes'];
+    // Obtener las asistencias y viajes
+    Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
+        await obtenerAsistenciasDeUsuariosEspecificos();
+    Map<String, List<Map<String, dynamic>>> viajesPorUsuario =
+        await obtenerViajesDeUsuariosEspecificos();
 
-    // Obtener lista combinada de todos los usuarios
-    Set<String> todosLosUsuarios = {...asistenciasPorUsuario.keys, ...viajesPorUsuario.keys};
-
-    for (String alias in todosLosUsuarios) {
+    // Primero, exportar asistencias (como antes)
+    asistenciasPorUsuario.forEach((alias, asistencias) {
       Sheet sheet = excel[alias];
 
-      // Encabezados para la sección de asistencias
       sheet.appendRow([
-        TextCellValue('REGISTRO DE ASISTENCIAS Y VIAJES'),
-      ]);
-      
-      sheet.appendRow([
-        TextCellValue('Tipo'),
+        TextCellValue('Usuario'),
         TextCellValue('Fecha'),
         TextCellValue('Hora Entrada'),
         TextCellValue('Hora Salida'),
         TextCellValue('Dirección'),
         TextCellValue('Dispositivo'),
-        TextCellValue('Destino'),
-        TextCellValue('Retorno'),
-        TextCellValue('Fecha Regreso'),
       ]);
 
-      // Agregar datos de asistencias
-      List<Map<String, dynamic>> asistencias = asistenciasPorUsuario[alias] ?? [];
       for (var asistencia in asistencias) {
         DateTime? fechaEntrada = asistencia['entrada']?.toDate();
         DateTime? fechaSalida = asistencia['salida']?.toDate();
 
         sheet.appendRow([
-          TextCellValue('Asistencia'),
-          TextCellValue(formatearFecha(fechaEntrada)),
-          TextCellValue(formatearHora(fechaEntrada)),
-          TextCellValue(fechaSalida != null ? formatearHora(fechaSalida) : 'No registrado'),
+          TextCellValue(asistencia['alias'] ?? ''),
+          TextCellValue(formatearFecha(fechaEntrada)), // Fecha formateada
+          TextCellValue(
+              formatearHora(fechaEntrada)), // Hora de entrada formateada
+          TextCellValue(fechaSalida != null
+              ? formatearHora(fechaSalida)
+              : 'No registrado'), // Hora de salida formateada
           TextCellValue(asistencia['direccion'] ?? 'No disponible'),
           TextCellValue(asistencia['dispositivo'] ?? 'No disponible'),
-          TextCellValue(''),  // Destino (vacío para asistencias)
-          TextCellValue(''),  // Retorno (vacío para asistencias)
-          TextCellValue(''),  // Fecha regreso (vacío para asistencias)
         ]);
       }
+    });
 
-      // Agregar datos de viajes
-      List<Map<String, dynamic>> viajes = viajesPorUsuario[alias] ?? [];
+    // Luego, exportar viajes en una hoja adicional para cada usuario
+    viajesPorUsuario.forEach((alias, viajes) {
+      // Crear una hoja específica para viajes si no existe
+      String nombreHoja = '$alias - Viajes';
+      Sheet sheetViajes = excel[nombreHoja];
+
+      sheetViajes.appendRow([
+        TextCellValue('Usuario'),
+        TextCellValue('Lugar de Destino'),
+        TextCellValue('Fecha de Viaje'),
+        TextCellValue('Lugar de Retorno'),
+        TextCellValue('Fecha de Retorno'),
+        TextCellValue('Fecha de Creación'),
+      ]);
+
       for (var viaje in viajes) {
-        // Convertir fechas de string a DateTime para viajes
-        DateTime? fechaIda;
-        DateTime? fechaRegreso;
-        
-        try {
-          if (viaje['fechaIda'] != null) {
-            List<String> partesFechaIda = viaje['fechaIda'].split('/');
-            if (partesFechaIda.length == 3) {
-              fechaIda = DateTime(
-                int.parse(partesFechaIda[2]), 
-                int.parse(partesFechaIda[1]), 
-                int.parse(partesFechaIda[0])
-              );
-            }
-          }
-          
-          if (viaje['fechaRegreso'] != null) {
-            List<String> partesFechaRegreso = viaje['fechaRegreso'].split('/');
-            if (partesFechaRegreso.length == 3) {
-              fechaRegreso = DateTime(
-                int.parse(partesFechaRegreso[2]), 
-                int.parse(partesFechaRegreso[1]), 
-                int.parse(partesFechaRegreso[0])
-              );
-            }
-          }
-        } catch (e) {
-          debugPrint("Error al procesar fechas de viaje: $e");
-        }
+        DateTime? fechaCreacion = viaje['fechaCreacion']?.toDate();
 
-        sheet.appendRow([
-          TextCellValue('Viaje'),
-          TextCellValue(viaje['fechaIda'] ?? ''),  // Ya está formateada
-          TextCellValue(''),  // Hora entrada (no aplica para viajes)
-          TextCellValue(''),  // Hora salida (no aplica para viajes)
-          TextCellValue(''),  // Dirección (no aplica para viajes)
-          TextCellValue(''),  // Dispositivo (no aplica para viajes)
-          TextCellValue(viaje['destino'] ?? ''),
-          TextCellValue(viaje['retorno'] ?? ''),
-          TextCellValue(viaje['fechaRegreso'] ?? ''),
+        sheetViajes.appendRow([
+          TextCellValue(viaje['alias'] ?? ''),
+          TextCellValue(viaje['Lugar de Destino'] ?? 'No disponible'),
+          TextCellValue(viaje['fechaIda'] ?? 'No disponible'),
+          TextCellValue(viaje['retorno'] ?? 'No disponible'),
+          TextCellValue(viaje['fechaRegreso'] ?? 'No disponible'),
+          TextCellValue(fechaCreacion != null
+              ? formatearFecha(fechaCreacion)
+              : 'No disponible'),
         ]);
       }
-    }
+    });
+
+    // Crear una hoja de resumen de viajes para todos los usuarios
+    Sheet sheetResumenViajes = excel['Resumen de Viajes'];
+    sheetResumenViajes.appendRow([
+      TextCellValue('Usuario'),
+      TextCellValue('Total de Viajes'),
+      TextCellValue('Destinos'),
+    ]);
+
+    viajesPorUsuario.forEach((alias, viajes) {
+      // Obtener destinos únicos
+      Set<String> destinos = viajes
+          .map((viaje) => viaje['destino'] as String?)
+          .where((destino) => destino != null && destino.isNotEmpty)
+          .cast<String>()
+          .toSet();
+
+      sheetResumenViajes.appendRow([
+        TextCellValue(alias),
+        TextCellValue(viajes.length.toString()),
+        TextCellValue(destinos.join(', ')),
+      ]);
+    });
 
     final Directory directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/asistencias_y_viajes.xlsx';
+    String filePath = '${directory.path}/asistencias_y_viajes_usuarios.xlsx';
     var fileBytes = excel.save();
 
     File(filePath)
@@ -247,215 +234,139 @@ class TablaAsistenciasPageAll extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Asistencias y Viajes'),
-        backgroundColor: const Color(0xff021b79),
-        foregroundColor: Colors.white,
+        title: const Text('Tabla de Asistencias y Viajes'),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
-            tooltip: 'Exportar a Excel',
             onPressed: () async {
-              // Mostrar indicador de carga
+              await exportarAsistenciasDeUsuariosEspecificos();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Generando Excel...')),
+                const SnackBar(content: Text('Datos exportados a Excel')),
               );
-              
-              final datos = await obtenerAsistenciasYViajesDeUsuarios();
-              await exportarDatosAExcel(datos);
-              
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Datos exportados exitosamente'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              }
             },
           ),
         ],
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: obtenerAsistenciasYViajesDeUsuarios(),
+      body: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+        future: obtenerAsistenciasDeUsuariosEspecificos(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Cargando datos de asistencias y viajes...'),
-                ],
-              ),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error, color: Colors.red, size: 48),
-                  const SizedBox(height: 16),
-                  Text('Error al cargar datos: ${snapshot.error}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Forzar recarga
-                      (context as StatefulElement).markNeedsBuild();
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
-            );
+            return const Center(child: Text('Error al cargar datos'));
           }
 
-          if (!snapshot.hasData || 
-              (snapshot.data!['asistencias'].isEmpty && snapshot.data!['viajes'].isEmpty)) {
-            return const Center(
-              child: Text('No hay datos de asistencias ni viajes disponibles'),
-            );
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No hay datos disponibles'));
           }
 
-          Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario = 
-              snapshot.data!['asistencias'];
-          Map<String, List<Map<String, dynamic>>> viajesPorUsuario = 
-              snapshot.data!['viajes'];
-          
-          // Combinar las listas de usuarios
-          Set<String> todosLosUsuarios = {...asistenciasPorUsuario.keys, ...viajesPorUsuario.keys};
-          List<String> usuariosOrdenados = todosLosUsuarios.toList()..sort();
+          Map<String, List<Map<String, dynamic>>> asistenciasPorUsuario =
+              snapshot.data!;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
-              children: usuariosOrdenados.map((usuario) {
-                List<Map<String, dynamic>> asistencias = asistenciasPorUsuario[usuario] ?? [];
-                List<Map<String, dynamic>> viajes = viajesPorUsuario[usuario] ?? [];
-                
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  elevation: 4,
-                  child: ExpansionTile(
-                    title: Text(
-                      usuario,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Asistencias: ${asistencias.length} | Viajes: ${viajes.length}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    children: [
-                      // Mostrar asistencias
-                      if (asistencias.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                'Asistencias',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(
-                                headingRowColor: MaterialStateProperty.all(
-                                  const Color(0xffeef2ff),
-                                ),
-                                columns: const <DataColumn>[
-                                  DataColumn(label: Text('Fecha')),
-                                  DataColumn(label: Text('Entrada')),
-                                  DataColumn(label: Text('Salida')),
-                                  DataColumn(label: Text('Dirección')),
-                                  DataColumn(label: Text('Dispositivo')),
-                                ],
-                                rows: asistencias.map((asistencia) {
-                                  DateTime? fechaEntrada = asistencia['entrada']?.toDate();
-                                  DateTime? fechaSalida = asistencia['salida']?.toDate();
-                                  
-                                  String fechaFormateada = fechaEntrada != null
-                                      ? DateFormat('dd/MM/yyyy').format(fechaEntrada)
-                                      : 'No registrado';
-                                  
-                                  String horaEntrada = fechaEntrada != null
-                                      ? DateFormat('hh:mm a').format(fechaEntrada)
-                                      : 'No registrado';
-                                  
-                                  String horaSalida = fechaSalida != null
-                                      ? DateFormat('hh:mm a').format(fechaSalida)
-                                      : 'No registrado';
-                                  
-                                  return DataRow(
-                                    cells: <DataCell>[
-                                      DataCell(Text(fechaFormateada)),
-                                      DataCell(Text(horaEntrada)),
-                                      DataCell(Text(horaSalida)),
-                                      DataCell(Text(asistencia['direccion'] ?? 'No disponible')),
-                                      DataCell(Text(asistencia['dispositivo'] ?? 'No disponible')),
-                                    ],
-                                  );
-                                }).toList(),
-                              ),
-                            ),
+              children: asistenciasPorUsuario.entries.map((entry) {
+                String usuario = entry.key;
+                List<Map<String, dynamic>> asistencias = entry.value;
+
+                return ExpansionTile(
+                  title: Text(usuario),
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: const <DataColumn>[
+                            DataColumn(label: Text('Usuario')),
+                            DataColumn(label: Text('Entrada')),
+                            DataColumn(label: Text('Salida')),
+                            DataColumn(label: Text('Dirección')),
+                            DataColumn(label: Text('Dispositivo')),
                           ],
+                          rows: asistencias.map((asistencia) {
+                            return DataRow(
+                              cells: <DataCell>[
+                                DataCell(Text(asistencia['alias'] ?? '')),
+                                DataCell(Text(asistencia['entrada'] != null
+                                    ? asistencia['entrada'].toDate().toString()
+                                    : 'No registrado')),
+                                DataCell(Text(asistencia['salida'] != null
+                                    ? asistencia['salida'].toDate().toString()
+                                    : 'No registrado')),
+                                DataCell(Text(asistencia['direccion'] ??
+                                    'No disponible')),
+                                DataCell(Text(asistencia['dispositivo'] ??
+                                    'No disponible')),
+                              ],
+                            );
+                          }).toList(),
                         ),
-                      
-                      // Mostrar viajes
-                      if (viajes.isNotEmpty)
-                        Column(
+                      ),
+                    ),
+                    FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+                      future: obtenerViajesDeUsuariosEspecificos(),
+                      builder: (context, viajesSnapshot) {
+                        if (!viajesSnapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+
+                        Map<String, List<Map<String, dynamic>>>
+                            viajesPorUsuario = viajesSnapshot.data!;
+                        List<Map<String, dynamic>> viajesUsuario =
+                            viajesPorUsuario[usuario] ?? [];
+
+                        if (viajesUsuario.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('No hay viajes registrados'),
+                          );
+                        }
+
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Text(
                                 'Viajes',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                                    fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: DataTable(
-                                headingRowColor: MaterialStateProperty.all(
-                                  const Color(0xffe8fcff),
-                                ),
                                 columns: const <DataColumn>[
-                                  DataColumn(label: Text('Destino')),
-                                  DataColumn(label: Text('Fecha Ida')),
-                                  DataColumn(label: Text('Retorno')),
-                                  DataColumn(label: Text('Fecha Regreso')),
+                                  DataColumn(label: Text('Lugar de Destino')),
+                                  DataColumn(label: Text('Fecha de Viaje')),
+                                  DataColumn(label: Text('Lugar de Retorno')),
+                                  DataColumn(label: Text('Fecha de Regreso')),
                                 ],
-                                rows: viajes.map((viaje) {
+                                rows: viajesUsuario.map((viaje) {
                                   return DataRow(
                                     cells: <DataCell>[
-                                      DataCell(Text(viaje['destino'] ?? 'No disponible')),
-                                      DataCell(Text(viaje['fechaIda'] ?? 'No disponible')),
-                                      DataCell(Text(viaje['retorno'] ?? 'No disponible')),
-                                      DataCell(Text(viaje['fechaRegreso'] ?? 'No disponible')),
+                                      DataCell(Text(
+                                          viaje['destino'] ?? 'No disponible')),
+                                      DataCell(Text(viaje['fechaIda'] ??
+                                          'No disponible')),
+                                      DataCell(Text(
+                                          viaje['retorno'] ?? 'No disponible')),
+                                      DataCell(Text(viaje['fechaRegreso'] ??
+                                          'No disponible')),
                                     ],
                                   );
                                 }).toList(),
                               ),
                             ),
                           ],
-                        ),
-                    ],
-                  ),
+                        );
+                      },
+                    ),
+                  ],
                 );
               }).toList(),
             ),
