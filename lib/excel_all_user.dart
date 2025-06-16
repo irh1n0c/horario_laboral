@@ -48,6 +48,7 @@ class TablaAsistenciasPageAll extends StatelessWidget {
     'sLCygj3eZFZr0ruGYHFswvzSqm63',
     'ZWJ936qs7cUiJnid3XyMo1CCICn1',
     'WjSHNIqdBhg8GPnNO6tIKZvgfnw2',
+    'oUzA8wLG9eY81vWa4B6BYJ5f0Tg2',
   ];
 
   Future<Map<String, List<Map<String, dynamic>>>>
